@@ -1,0 +1,610 @@
+CHIP        ?= best1501
+
+DEBUG       ?= 1
+
+FPGA        ?= 0
+
+RTOS        ?= 1
+
+# LIBC_ROM    ?= 1
+
+export LIBC_OVERRIDE := 1
+
+#KERNEL      ?= RTX5
+
+VERSION_INFO ?= best2500p_ibrt
+
+ifeq ($(KERNEL), NUTTX)
+export ALLOW_WARNING := 1
+export NO_LIBC := 1
+export NUTTX_BUILD :=1
+export RTC_ENABLE := 1
+export NUTTX_BLE_BRIDGE_MODE ?= 0
+export RAMCP_SIZE := 0x0
+KBUILD_CPPFLAGS += -DRAMCP_SIZE=$(RAMCP_SIZE)
+KBUILD_CPPFLAGS += -DRAMCPX_SIZE=$(RAMCP_SIZE)
+
+KBUILD_CFLAGS += -DPWR_KEY_AS_SYS_RQ_KEY -DNUTTX_SERIAL_CONSOLE
+
+ifeq ($(RTC_ENABLE),1)
+KBUILD_CPPFLAGS += -DCHIP_HAS_DIG_RTC -DRTC_BASE=0
+endif
+ifeq ($(NUTTX_BLE_BRIDGE_MODE),1)
+KBUILD_CFLAGS += -DNUTTX_BLE_BRIDGE_MODE
+endif
+endif
+
+export USER_SECURE_BOOT	?= 0
+# enable:1
+# disable:0
+
+WATCHER_DOG ?= 1
+
+DEBUG_PORT  ?= 1
+# 0: usb
+# 1: uart0
+# 2: uart1
+
+FLASH_CHIP	?= ALL
+# GD25Q80C
+# GD25Q32C
+# ALL
+
+export FUZZ_TEST_SUPPORT ?= 0
+
+export SNYC_FOUND_CHECK_HECERROR ?= 1
+
+export RF_INIT_XTAL_CAP_FROM_NV ?= 1
+
+export BLE_EXT_ADV_TX_PWR_INDEPEND ?= 0
+
+export BT_BLE_USING_SAME_TX_LEVEL ?= 0
+
+export TX_PWR_LOWER_2DBM ?= 0
+
+export AFH_ASSESS ?= 0
+
+export BT_RAMRUN ?= 0
+
+export HW_AGC ?= 0
+
+export NEW_SWAGC_MODE ?= 1
+
+export BLE_NEW_SWAGC_MODE ?= 0
+
+export BT_LOG_POWEROFF ?= 0
+
+export BT_INFO_CHECKER ?= 1
+
+export BT_TEST_CURRENT_KEY ?= 0
+
+export BT_UART_LOG_P16 ?= 0
+
+export BT_UART_LOG ?= 0
+
+export BT_SYSTEM_52M ?= 0
+
+export BES_FA_MODE ?= 0
+
+export LL_MONITOR ?= 0
+
+export SOFTBIT_EN ?= 0
+
+export ACL_DATA_CRC_TEST ?= 0
+
+export FORCE_SIGNALINGMODE ?= 0
+
+export FORCE_NOSIGNALINGMODE ?= 0
+
+export BT_FA_ECC ?= 1
+
+ifeq ($(BT_FA_ECC),1)
+export BT_FA_SCO_ECC ?= 0
+export BT_FA_ACL_ECC ?= 1
+endif
+
+export BT_ECC_CONFIG_BLK ?= 3
+
+export BT_BID_ECC_EN ?= 0
+
+export BT_FAST_LOCK_ENABLE ?= 0
+
+export IBRT_TESTMODE ?= 0
+
+export CONTROLLER_DUMP_ENABLE ?= 1
+
+export CONTROLLER_MEM_LOG_ENABLE ?= 0
+
+export INTERSYS_DEBUG ?= 1
+
+export PROFILE_DEBUG ?= 0
+
+export BTDUMP_ENABLE ?= 0
+
+# this is used for SLT test only.
+export SLT_TEST_ON ?= 0
+ifeq ($(SLT_TEST_ON),1)
+export BT_DEBUG_TPORTS ?= 1
+NO_PWRKEY ?= 1
+POWER_ON_ENTER_TWS_PAIRING_ENABLED ?= 1
+
+KBUILD_CPPFLAGS += -DSLT_TEST_ON
+KBUILD_CPPFLAGS += -D__POWERKEY_CTRL_ONOFF_ONLY__
+else
+export BT_DEBUG_TPORTS ?= 0
+endif
+
+export TPORTS_KEY_COEXIST ?= 0
+
+export BT_SIGNALTEST_SLEEP_EN ?= 0
+
+export PATCH_SYMBOL_DIR ?= $(srctree)/platform/drivers/bt/best2300a
+
+export LD_USE_PATCH_SYMBOL ?= -Wl,--just-symbols=$(PATCH_SYMBOL_DIR)/patch_symbol_parsed.txt -Wl,--just-symbols=$(PATCH_SYMBOL_DIR)/patch_symbol_parsed_testmode.txt
+
+export DISPLAY_PREFIX_HCI_CMD_EVT_ ?= 0
+
+AUDIO_OUTPUT_MONO ?= 0
+
+AUDIO_OUTPUT_DIFF ?= 0
+
+HW_FIR_EQ_PROCESS ?= 0
+
+SW_IIR_EQ_PROCESS ?= 0
+
+SW_IIR_PROMPT_EQ_PROCESS ?= 0
+
+HW_DAC_IIR_EQ_PROCESS ?= 1
+
+HW_IIR_EQ_PROCESS ?= 0
+
+HW_DC_FILTER_WITH_IIR ?= 0
+
+AUDIO_DRC ?= 0
+
+AUDIO_LIMITER ?= 0
+
+AUDIO_HEARING_COMPSATN ?= 0
+ifeq ($(AUDIO_HEARING_COMPSATN),1)
+APP_TRACE_RX_ENABLE := 1
+HEARING_MOD ?= HWIIR
+endif
+# HWFIR
+# SWIIR
+# HWIIR
+
+PC_CMD_UART ?= 0
+
+TOTA_EQ_TUNING ?= 0
+
+AUDIO_SECTION_ENABLE ?= 0
+
+AUDIO_RESAMPLE ?= 1
+
+RESAMPLE_ANY_SAMPLE_RATE ?= 1
+
+OSC_26M_X4_AUD2BB ?= 1
+
+AUDIO_OUTPUT_VOLUME_DEFAULT ?= 16
+# range:1~16
+
+CODEC_DAC_MULTI_VOLUME_TABLE ?= 0
+
+AUDIO_INPUT_CAPLESSMODE ?= 0
+
+AUDIO_INPUT_LARGEGAIN ?= 0
+
+AUDIO_CODEC_ASYNC_CLOSE ?= 0
+
+AUDIO_SCO_BTPCM_CHANNEL ?= 1
+
+export A2DP_CP_ACCEL ?= 1
+
+export SCO_CP_ACCEL ?= 1
+
+export SCO_TRACE_CP_ACCEL ?= 0
+
+# For TWS SCO DMA snapshot and low delay
+export PCM_FAST_MODE ?= 1
+
+export PCM_PRIVATE_DATA_FLAG ?= 0
+
+export CVSD_BYPASS ?= 1
+
+export LOW_DELAY_SCO ?= 0
+
+export SPEECH_TX_24BIT ?= 0
+
+SPEECH_BONE_SENSOR ?= 0
+
+SPEECH_TX_DC_FILTER ?= 0
+
+SPEECH_TX_AEC2FLOAT ?= 0
+
+SPEECH_TX_NS3 ?= 0
+
+SPEECH_TX_2MIC_NS2 ?= 0
+
+SPEECH_TX_COMPEXP ?= 0
+
+SPEECH_TX_EQ ?= 0
+
+SPEECH_TX_POST_GAIN ?= 0
+
+SPEECH_RX_NS2FLOAT ?= 0
+
+SPEECH_RX_EQ ?= 0
+
+SPEECH_RX_POST_GAIN ?= 0
+
+LARGE_RAM ?= 1
+
+HSP_ENABLE ?= 0
+
+SBC_FUNC_IN_ROM ?= 0
+
+ROM_UTILS_ON ?= 1
+
+APP_LINEIN_A2DP_SOURCE ?= 0
+
+APP_I2S_A2DP_SOURCE ?= 0
+
+VOICE_PROMPT ?= 1
+
+TWS_PROMPT_SYNC ?= 1
+
+REPORT_CONNECTIVITY_LOG ?= 0
+
+# TOTA1: old tota, TOTA2: new tota(debuging)
+export TOTA ?= 0
+export TOTA_v2 ?= 0
+
+ifeq ($(TOTA_v2),1)
+export TOTA := 0
+endif
+
+export APP_RSSI ?=0
+ifeq ($(APP_RSSI),1)
+export TOTA_v2 := 1
+KBUILD_CPPFLAGS += -DGET_PEER_RSSI_ENABLE
+endif
+
+GATT_OVER_BR_EDR ?= 0
+
+BES_OTA ?= 1
+
+TILE_DATAPATH_ENABLED ?= 0
+
+CUSTOM_INFORMATION_TILE_ENABLE ?= 0
+
+INTERCONNECTION ?= 0
+
+INTERACTION ?= 0
+
+INTERACTION_FASTPAIR ?= 0
+
+SWIFT_ENABLE ?= 0
+
+BT_ONE_BRING_TWO ?= 0
+
+DSD_SUPPORT ?= 0
+
+A2DP_EQ_24BIT ?= 1
+
+A2DP_AAC_ON ?= 1
+
+A2DP_SCALABLE_ON ?= 0
+
+A2DP_LHDC_ON ?= 0
+
+ifeq ($(A2DP_LHDC_ON),1)
+A2DP_LHDC_V3 ?= 1
+export FLASH_UNIQUE_ID ?= 1
+endif
+
+A2DP_LDAC_ON ?= 0
+
+export A2DP_LC3_ON ?= 0
+
+export TX_RX_PCM_MASK ?= 0
+
+FACTORY_MODE ?= 1
+
+ENGINEER_MODE ?= 1
+
+ULTRA_LOW_POWER	?= 1
+
+DAC_CLASSG_ENABLE ?= 1
+
+NO_SLEEP ?= 0
+
+CORE_DUMP ?= 1
+
+CORE_DUMP_TO_FLASH ?= 0
+
+RAM_DUMP_TO_FLASH ?= 0
+
+export SYNC_BT_CTLR_PROFILE ?= 0
+
+export A2DP_AVDTP_CP ?= 0
+
+export A2DP_DECODER_VER := 2
+
+export IS_USE_MIXING_FRQ_FOR_A2DP_STREAMING ?=0
+export HIGH_EFFICIENCY_TX_PWR_CTRL ?=0
+export DCDC_HIGH_EFFICIENCY_CTRL ?=0
+export BT_SBC_PLAY_DEFAULT_FREQ ?= 0
+
+ifeq ($(BT_SBC_PLAY_DEFAULT_FREQ),2)
+export HIGH_EFFICIENCY_TX_PWR_CTRL :=1
+export DCDC_HIGH_EFFICIENCY_CTRL :=1
+endif
+ifneq ($(BT_SBC_PLAY_DEFAULT_FREQ), )
+    KBUILD_CPPFLAGS += -DBT_SBC_PLAY_DEFAULT_FREQ=$(BT_SBC_PLAY_DEFAULT_FREQ)
+endif
+
+
+export IBRT ?= 1
+
+export SEARCH_UI_COMPATIBLE_UI_V2 ?= 0
+
+export IBRT_UI_V1 ?= 0
+ifeq ($(IBRT_UI_V1),1)
+KBUILD_CPPFLAGS += -DIBRT_UI_V1
+endif
+
+export IBRT_CORE_V2 ?= 1
+ifeq ($(IBRT_CORE_V2),1)
+KBUILD_CPPFLAGS += -DIBRT_CORE_V2_ENABLE
+endif
+
+export IBRT_UI_V2 ?= 1
+ifeq ($(IBRT_UI_V2),1)
+KBUILD_CPPFLAGS += -DIBRT_UI_V2
+endif
+
+export BES_AUD ?= 1
+
+export POWER_MODE   ?= DIG_DCDC
+
+export BT_RF_PREFER ?= 2M
+
+export SPEECH_CODEC ?= 1
+
+export MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED ?= 1
+export IOS_MFI ?= 0
+
+export FLASH_SIZE ?= 0x400000
+export FLASH_SUSPEND ?= 1
+
+export HOST_GEN_ECDH_KEY ?= 0
+
+export SW_TRIG ?= 1
+
+USE_THIRDPARTY ?= 0
+export USE_KNOWLES ?= 0
+
+export LAURENT_ALGORITHM ?= 1
+
+export RX_IQ_CAL ?= 0
+
+export IBRT_DUAL_ANT_CTRL ?= 0
+
+export BT_XTAL_SYNC ?= 1
+
+export BTADDR_FOR_DEBUG ?= 1
+
+export POWERKEY_I2C_SWITCH ?=0
+
+AUTO_TEST ?= 0
+
+BES_AUTOMATE_TEST ?= 0
+
+export DUMP_LOG_ENABLE ?= 0
+
+SUPPORT_BATTERY_REPORT ?= 1
+
+SUPPORT_HF_INDICATORS ?= 0
+
+SUPPORT_SIRI ?= 1
+
+BES_AUDIO_DEV_Main_Board_9v0 ?= 0
+
+APP_USE_LED_INDICATE_IBRT_STATUS ?= 0
+
+export BT_EXT_LNA_PA ?=0
+export BT_EXT_LNA ?=0
+export BT_EXT_PA ?=0
+
+#For ble feture verification
+BLE ?= 0
+export BLE_AUDIO_ENABLED ?= 0
+export BLE_AOB_UX_ENABLED ?= 0
+CUSTOMER_DEFINE_ADV_DATA ?= 0
+export BLE_CONNECTION_MAX ?= 3
+
+#For free tws pairing feature
+FREE_TWS_PAIRING_ENABLED ?= 0
+
+APP_UART_MODULE ?= 0
+
+ifeq ($(A2DP_LHDC_ON),1)
+AUDIO_BUFFER_SIZE ?= 140*1024
+else
+AUDIO_BUFFER_SIZE ?= 150*1024
+endif
+
+export AUDIO_OUTPUT_DC_AUTO_CALIB ?= 1
+ifeq ($(AUDIO_OUTPUT_DC_AUTO_CALIB), 1)
+export AUDIO_OUTPUT_DC_CALIB := 1
+export AUDIO_OUTPUT_DC_CALIB_ANA := 0
+export AUDIO_OUTPUT_SET_LARGE_ANA_DC ?= 1
+export DAC_DRE_ENABLE ?= 1
+export CODEC_DAC_DC_NV_DATA ?= 1
+endif
+
+export TRACE_BUF_SIZE ?= 32*1024
+export TRACE_BAUD_RATE ?= 10*115200
+export BTM_MAX_LINK_NUMS ?= 3
+export BT_DEVICE_NUM ?= 2
+
+#CODEC_VAD_CFG_BUF_SIZE ?= 0x18000
+
+init-y :=
+core-y := platform/ services/ apps/ utils/cqueue/ utils/list/ services/multimedia/ utils/intersyshci/ utils/sha256/
+
+KBUILD_CPPFLAGS += \
+    -Iplatform/cmsis/inc \
+    -Iservices/audioflinger \
+    -Iplatform/hal
+
+KBUILD_CPPFLAGS += \
+    -DAPP_AUDIO_BUFFER_SIZE=$(AUDIO_BUFFER_SIZE) \
+    -DCHARGER_PLUGINOUT_RESET=0
+
+KBUILD_CPPFLAGS += \
+    -DBTM_MAX_LINK_NUMS=$(BTM_MAX_LINK_NUMS) \
+    -DBT_DEVICE_NUM=$(BT_DEVICE_NUM)
+
+ifeq ($(BES_AUDIO_DEV_Main_Board_9v0),1)
+KBUILD_CPPFLAGS += -DBES_AUDIO_DEV_Main_Board_9v0
+endif
+
+ifeq ($(TPORTS_KEY_COEXIST),1)
+KBUILD_CPPFLAGS += -DTPORTS_KEY_COEXIST
+endif
+
+ifeq ($(AUDIO_HEARING_COMPSATN),1)
+HEARING_USE_STATIC_RAM := 1
+ifeq ($(HEARING_MOD),HWFIR)
+HW_FIR_EQ_PROCESS := 1
+HEARING_MOD_VAL := 0
+USE_CMSIS_FFT_LEN_1024 := 1
+else
+ifeq ($(HEARING_MOD),SWIIR)
+SW_IIR_EQ_PROCESS := 1
+HEARING_MOD_VAL := 1
+else
+HW_DAC_IIR_EQ_PROCESS := 1
+HEARING_MOD_VAL := 2
+endif
+endif
+endif
+
+#-DIBRT_LINK_LOWLAYER_MONITOR
+
+#-D_AUTO_SWITCH_POWER_MODE__
+#-D__APP_KEY_FN_STYLE_A__
+#-D__APP_KEY_FN_STYLE_B__
+#-D__EARPHONE_STAY_BOTH_SCAN__
+#-D__POWERKEY_CTRL_ONOFF_ONLY__
+#-DAUDIO_LINEIN
+
+ifeq ($(BT_RAMRUN),1)
+KBUILD_CPPFLAGS += -D__BT_RAMRUN__
+endif
+
+ifeq ($(CURRENT_TEST),1)
+export SMALL_RET_RAM ?= 1
+export CORE_SLEEP_POWER_DOWN ?= 1
+#INTSRAM_RUN ?= 1
+endif
+ifeq ($(INTSRAM_RUN),1)
+LDS_FILE := best1000_intsram.lds
+else
+LDS_FILE := best1000.lds
+endif
+
+export OTA_SUPPORT_SLAVE_BIN ?= 0
+ifeq ($(OTA_SUPPORT_SLAVE_BIN),1)
+export SLAVE_BIN_FLASH_OFFSET ?= 0x100000
+export SLAVE_BIN_TARGET_NAME ?= anc_usb
+endif
+
+ifeq ($(GATT_OVER_BR_EDR),1)
+export GATT_OVER_BR_EDR ?= 1
+KBUILD_CPPFLAGS += -D__GATT_OVER_BR_EDR__
+endif
+
+ifeq ($(SECURE_BOOT_WORKAROUND_SOLUTION),1)
+export OTA_BOOT_USE_FLASH_NC_SECTION ?= 1
+KBUILD_CPPFLAGS += -DSECURE_BOOT_WORKAROUND_SOLUTION
+endif
+
+ifeq ($(BES_OTA),1)
+# enabled when 1501 flash remap is ready
+FLASH_REMAP ?= 0
+ifeq ($(FLASH_REMAP),1)
+export NEW_IMAGE_FLASH_OFFSET ?= OTA_REMAP_OFFSET
+else
+export NEW_IMAGE_FLASH_OFFSET ?= $(FLASH_SIZE)/2
+endif
+endif
+
+ifneq ($(A2DP_DECODER_VER), )
+KBUILD_CPPFLAGS += -DA2DP_DECODER_VER=$(A2DP_DECODER_VER)
+endif
+
+ifeq ($(HOST_GEN_ECDH_KEY),1)
+KBUILD_CPPFLAGS += -D__HOST_GEN_ECDH_KEY__
+endif
+
+ifeq ($(SW_TRIG),1)
+KBUILD_CPPFLAGS += -D__SW_TRIG__
+endif
+
+KBUILD_CPPFLAGS += -DHAL_TRACE_RX_ENABLE
+
+ifeq ($(AUDIO_OUTPUT_DC_AUTO_CALIB),1)
+KBUILD_CPPFLAGS += -DAUDIO_OUTPUT_DC_AUTO_CALIB
+endif
+
+ifeq ($(CODEC_DAC_DC_NV_DATA), 1)
+KBUILD_CPPFLAGS += -DCODEC_DAC_DC_NV_DATA
+endif
+
+ifeq ($(REPORT_CONNECTIVITY_LOG),1)
+KBUILD_CPPFLAGS += -D__CONNECTIVITY_LOG_REPORT__
+KBUILD_CPPFLAGS += -D__AUDIO_RETRIGGER_REPORT__
+endif
+
+ifeq ($(SNYC_FOUND_CHECK_HECERROR),1)
+KBUILD_CPPFLAGS += -D__SNYC_FOUND_CHECK_HECERROR__
+endif
+
+KBUILD_CFLAGS +=
+
+LIB_LDFLAGS += -lstdc++ -lsupc++
+
+DUAL_MIC_RECORDING ?= 0
+RECORDING_USE_SCALABLE ?= 0
+RECORDING_USE_OPUS ?= 0
+RECORDING_USE_OPUS_LOWER_BANDWIDTH ?= 0
+
+# mutex for power on tws pairing and freeman pairing
+POWER_ON_ENTER_TWS_PAIRING_ENABLED ?= 0
+POWER_ON_ENTER_FREEMAN_PAIRING_ENABLED ?= 0
+
+OS_THREAD_TIMING_STATISTICS_ENABLE ?= 0
+
+# enabled if wanna use sensor hub module
+# export SENSOR_HUB ?= 1
+
+# if VAD enabled, sensor hub always use large ram memory
+ifeq ($(VOICE_DETECTOR_SENS_EN),1)
+LARGE_SENS_RAM ?= 1
+export SENSOR_HUB ?= 1
+endif
+
+
+## Customer configure ##
+KBUILD_CPPFLAGS += -DRAMCPX_SIZE=0x13000
+
+export APP_SYSFREQ_BOOST ?= 1
+ifeq ($(APP_SYSFREQ_BOOST), 1)
+KBUILD_CPPFLAGS += -DAPP_SYSFREQ_BOOST
+endif
+
+#CFLAGS_IMAGE += -u _printf_float -u _scanf_float
+
+#LDFLAGS_IMAGE += --wrap main

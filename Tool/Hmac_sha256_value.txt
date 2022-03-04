@@ -1,0 +1,5 @@
+The xspace_ibrt_sha256.bin.xzip file's Hmac_sha256 value is:
+64 71 16 AF 96 1B 63 88 51 78 AC F5 8B 50 D2 9B F5 5D 01 54 88 45 7C 76 4E B9 F9 B1 E0 53 F4 A4 
+
+The xspace_ibrt_sha256_sha256.bin file's Hmac_sha256 value is:
+DD 75 48 30 C0 4E 0D C9 43 B7 4B E6 95 F0 E2 AE 78 E8 06 67 00 0A 8B 11 E4 1B 28 4F CF 45 3D C1 
