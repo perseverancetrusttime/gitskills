@@ -15,3 +15,7 @@ endif
 ifneq ($(findstring __XBUS_UART_SUPPORT__,$(KBUILD_CPPFLAGS)), )
 obj-y += xbus/
 endif
+
+ifneq ($(findstring __IMU_SUPPORT__,$(KBUILD_CPPFLAGS)), )
+obj-y += imu/
+endif

@@ -168,6 +168,10 @@ extern const struct HAL_IOMUX_PIN_FUNCTION_MAP app_charger_int_cfg;
 extern const struct HAL_IOMUX_PIN_FUNCTION_MAP cover_status_int_cfg;
 #endif
 
+#if defined (__XSPACE_IMU_MANAGER__)
+extern const struct HAL_IOMUX_PIN_FUNCTION_MAP imu_int_status_cfg;
+#endif
+
 #if defined(__XBUS_UART_SUPPORT__)
 extern const struct HAL_IOMUX_PIN_FUNCTION_MAP xbus_uart_tx_cfg;
 extern const struct HAL_IOMUX_PIN_FUNCTION_MAP xbus_uart_rx_cfg;

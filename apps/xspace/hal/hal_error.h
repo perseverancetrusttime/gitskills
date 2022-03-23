@@ -12,7 +12,7 @@ typedef enum
     HAL_INIT_ERROR = 2,
     HAL_INVALID_PARAMETER = 3,
     HAL_IR_CALIB_ERROR = 4,
-}hal_error_e;
+} hal_error_e;
 
 #ifdef __cplusplus
     }

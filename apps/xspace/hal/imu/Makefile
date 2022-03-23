@@ -5,5 +5,4 @@ obj-y := $(obj-y:.cpp=.o)
 
 
 subdir-ccflags-y += \
-		-Iapps/xspace/hal \
-		-Iapps/xspace/driver/imu/tdk_42607p
+		-Iapps/xspace/hal/

@@ -74,8 +74,12 @@
 
 #define LDO_EN_PIN			            		(HAL_IOMUX_PIN_P1_4)
 
+#if defined (__XSPACE_IMU_MANAGER__)
+//Note(Mike):Hardcode HALL Interrupt pin for IMU Interrupt pin
+#define IMU_INT_PIN			                    (HAL_IOMUX_PIN_P1_2)
 #if defined(__XSPACE_COVER_SWITCH_MANAGER__)
-#define HALL_SWITCH_INT_PIN			            (HAL_IOMUX_PIN_P1_2)
+#define HALL_SWITCH_INT_PIN			            (HAL_IOMUX_PIN_NUM)
+#endif
 #endif
 
 #if defined(__GET_BAT_VOL_GPIO_EN__)
@@ -371,10 +375,17 @@ const struct HAL_IOMUX_PIN_FUNCTION_MAP ldo_en_cfg = {
     LDO_EN_PIN, HAL_IOMUX_FUNC_AS_GPIO, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_NOPULL,
 };
 
+
+#if defined (__XSPACE_IMU_MANAGER__)
+const struct HAL_IOMUX_PIN_FUNCTION_MAP imu_int_status_cfg = {
+	IMU_INT_PIN, HAL_IOMUX_FUNC_AS_GPIO, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_NOPULL
+};
+
 #if defined(__XSPACE_COVER_SWITCH_MANAGER__)
 const struct HAL_IOMUX_PIN_FUNCTION_MAP cover_status_int_cfg = {
 	HALL_SWITCH_INT_PIN, HAL_IOMUX_FUNC_AS_GPIO, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_NOPULL
 };
+#endif
 #endif
 
 #if defined(__CHARGER_SUPPORT__)

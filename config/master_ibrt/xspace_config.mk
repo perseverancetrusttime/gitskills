@@ -100,6 +100,7 @@ ifeq ($(XSPACE_PROJ),1)
     export XSPACE_INEAR_DETECTION_MANAGER   ?= 1
     export XSPACE_INOUT_BOX_MANAGER         ?= 1
     export XSPACE_XBUS_MANAGER              ?= 1
+    export XSPACE_IMU_MANAGER               ?= 1
     export AUDIO_DUMP_FIVE_DEBUG             = 0
     export DEV_THREAD ?= 1
     export XSPACE_AUTO_TEST ?= 0
@@ -120,7 +121,7 @@ ifeq ($(XSPACE_PROJ),1)
     ## Gesture Manager Macro Control
     ifeq ($(XSPACE_GESTURE_MANAGER),1)
         KBUILD_CPPFLAGS += -D__XSPACE_GESTURE_MANAGER__
-        KBUILD_CPPFLAGS += -D__GESTURE_MANAGER_USE_PRESSURE__
+        #KBUILD_CPPFLAGS += -D__GESTURE_MANAGER_USE_PRESSURE__
         KBUILD_CPPFLAGS += -D__GESTURE_MANAGER_USE_TOUCH__
         #KBUILD_CPPFLAGS += -D__GESTURE_MANAGER_USE_ACC__
 
@@ -187,6 +188,12 @@ ifeq ($(XSPACE_PROJ),1)
     ifeq ($(XSPACE_PRODUCT_TEST),1)
         KBUILD_CPPFLAGS += -D__XSPACE_PRODUCT_TEST__
     endif
+    ## IMU- ACCELEROMETER and GYROSOPE feature Manager
+    ifeq ($(XSPACE_IMU_MANAGER),1)
+        KBUILD_CPPFLAGS += -D__XSPACE_IMU_MANAGER__
+        KBUILD_CPPFLAGS += -D__IMU_SUPPORT__
+    endif
+
     ###########################################################################
 
     # Components & peripherals selected
@@ -194,7 +201,7 @@ ifeq ($(XSPACE_PROJ),1)
             #KBUILD_CPPFLAGS += -D__PRESSURE_AW8680X__
             #KBUILD_CPPFLAGS += -D__PRESSURE_CSA37F71__
             KBUILD_CPPFLAGS += -D__PRESSURE_NEXTINPUT__
-            KBUILD_CPPFLAGS += -D__USE_HW_I2C__
+            #KBUILD_CPPFLAGS += -D__USE_HW_I2C__
     endif
 
     ifneq ($(findstring __TOUCH_SUPPORT__,$(KBUILD_CPPFLAGS)), )
@@ -205,7 +212,7 @@ ifeq ($(XSPACE_PROJ),1)
             #KBUILD_CPPFLAGS += -DPO_QUICKLY_OUT_BOX_WITHOUT_WEAR_FIX
             #KBUILD_CPPFLAGS += -D__TOUCH_GH61X__
             #KBUILD_CPPFLAGS += -D__USE_HW_I2C__
-            KBUILD_CPPFLAGS += -D__USE_SW_I2C__
+            #KBUILD_CPPFLAGS += -D__USE_SW_I2C__
         endif
     endif
 
@@ -217,6 +224,12 @@ ifeq ($(XSPACE_PROJ),1)
             KBUILD_CPPFLAGS += -D__CHARGER_SY5500__
             KBUILD_CPPFLAGS += -D__USE_SW_I2C__
         endif
+    endif
+  
+    ifneq ($(findstring __IMU_SUPPORT__,$(KBUILD_CPPFLAGS)), )
+        KBUILD_CPPFLAGS += -D__IMU_TDK42607P__
+        KBUILD_CPPFLAGS += -D__USE_HW_I2C__
+        #KBUILD_CPPFLAGS += -D__USE_SW_I2C__
     endif
 
     ifneq ($(findstring __USE_HW_I2C__,$(KBUILD_CPPFLAGS)), )
@@ -237,7 +250,7 @@ ifeq ($(XSPACE_PROJ),1)
     ###########################################################################
 
     #Log control 
-    export XSPACE_TRACE ?= 0
+    export XSPACE_TRACE ?= 1
     #Zhangbin add trace switch(defalut off) start
     KBUILD_CPPFLAGS += -D__XSPACE_TRACE_DISABLE__
     #Zhangbin add trace switch(defalut off) end
@@ -245,22 +258,23 @@ ifeq ($(XSPACE_PROJ),1)
     #KBUILD_CPPFLAGS += -D__XSPACE_PLC_DEBUG_PRINT_DATA__
     ifeq ($(XSPACE_TRACE),1)
         # Driver layout trace
-        KBUILD_CPPFLAGS += -D__XBUS_UART_DEBUG__
-        KBUILD_CPPFLAGS += -D__DRV_ADC_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XBUS_UART_DEBUG__
+        #KBUILD_CPPFLAGS += -D__DRV_ADC_DEBUG__
 
         # Hal layout trace
-        KBUILD_CPPFLAGS += -D__HAL_PMU_DEBUG__
+        #KBUILD_CPPFLAGS += -D__HAL_PMU_DEBUG__
 
         # UI layout trace
-        KBUILD_CPPFLAGS += -D__XSPACE_UI_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_UI_DEBUG__
 
         # Manager layout trace
-        KBUILD_CPPFLAGS += -D__XSPACE_INEAR_DEBUG__
-        KBUILD_CPPFLAGS += -D__XSPACE_GM_DEBUG__
-        KBUILD_CPPFLAGS += -D__XSPACE_CSM_DEBUG__
-        KBUILD_CPPFLAGS += -D__XSPACE_IOBOX_DEBUG__
-        KBUILD_CPPFLAGS += -D__XSPACE_XBM_DEBUG__
-        KBUILD_CPPFLAGS += -D__XSPACE_BM_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_INEAR_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_GM_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_CSM_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_IOBOX_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_XBM_DEBUG__
+        #KBUILD_CPPFLAGS += -D__XSPACE_BM_DEBUG__
+        KBUILD_CPPFLAGS += -D__XSPACE_IMU_DEBUG__
 
         # Interface layout trace
         KBUILD_CPPFLAGS += -D__XSPACE_INTETFACE_TRACE__

@@ -28,6 +28,7 @@
 #include "hal_trace.h"
 #include "string.h"
 
+//#define I2C_DEBUG
 #ifdef I2C_DEBUG
 #define HAL_I2C_TRACE(attr, str, ...) TRACE(attr, str, ##__VA_ARGS__)
 #define HAL_I2C_ERROR(attr, str, ...) TRACE(attr, str, ##__VA_ARGS__)

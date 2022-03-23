@@ -93,6 +93,7 @@ endif
 
 I2C_TASK_MODE ?= 1
 I2C_SIMPLE_MODE ?= 1
+I2C_DEBUG := 0
 ifeq ($(I2C_TASK_MODE),1)
 CFLAGS_hal_i2c.o += -DI2C_TASK_MODE
 endif

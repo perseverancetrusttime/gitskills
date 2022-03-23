@@ -22,6 +22,13 @@ osMutexId xspace_i2c_communication_mutex_id = NULL;
 osMutexDef(xspace_i2c_communication_mutex);
 #endif
 
+static bool init_status = false;
+
+bool xspace_get_i2c_init_status() {
+
+    return init_status;
+}
+
 void xspace_i2c_init(void)
 {
 #if defined (__USE_HW_I2C__)
@@ -38,6 +45,9 @@ void xspace_i2c_init(void)
     }
     osMutexRelease(xspace_i2c_communication_mutex_id);
 #endif
+
+    init_status = true;
+
 }
 
 bool xspace_i2c_write(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, uint8_t data)
@@ -123,7 +133,7 @@ bool xspace_i2c_read(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_ad
     return bret;
 }
 
-bool xspace_i2c_burst_write(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, uint8_t *data_buffer, uint8_t len)
+bool xspace_i2c_burst_write(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, const uint8_t *data_buffer, uint8_t len)
 {
     uint8_t I2c_Write_Buffer[256];
     bool bret = true;

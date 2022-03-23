@@ -11,7 +11,7 @@ void hw_i2c_master_init(void)
 {
     struct HAL_I2C_CONFIG_T hal_i2c_cfg;
     
-	hal_iomux_set_i2c0();
+	//hal_iomux_set_i2c0();
 
     hal_i2c_cfg.mode = HAL_I2C_API_MODE_TASK;
     hal_i2c_cfg.use_dma  = 0;

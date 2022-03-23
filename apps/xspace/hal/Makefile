@@ -21,3 +21,7 @@ endif
 ifneq ($(findstring __PRESSURE_SUPPORT__,$(KBUILD_CPPFLAGS)), )
 obj-y += pressure/
 endif
+
+ifneq ($(findstring __IMU_SUPPORT__,$(KBUILD_CPPFLAGS)), )
+obj-y += imu/
+endif

@@ -25,6 +25,7 @@
 #include "pmu.h"
 #include "app_bt_media_manager.h"
 #include "app_hfp.h"
+#include <stdio.h>
 #ifdef GFPS_ENABLED 
 #include "app_gfps.h"
 #endif
@@ -71,12 +72,15 @@
 #include "xspace_tws_switch_process.h"
 #endif
 
+#if defined (__XSPACE_IMU_MANAGER__)
+#include "xspace_imu_manager.h"
+#endif
 #ifdef __XSPACE_CUSTOMIZE_ANC__
 #include "app_anc.h"
 #include "app_anc_assist.h"
 #endif
 
-/*******************************static variable/func**********************************/
+/******************************* Static Variable/Func Delcaration *******************************/
 static void xspace_ui_init_done(void);
 #if defined(__XSPACE_BATTERY_MANAGER__)
 static void xspace_ui_battery_low_voice_report(void);
@@ -120,8 +124,7 @@ static uint8_t mobile_connect_voice_status = 0;
 #define XSPACE_UI_MSG_BUF_SIZE (XUI_TWS_SYNC_INFO_BUFF_LENGTH + 4)
 static uint8_t xspace_ui_msg_buf[XSPACE_UI_MSG_BUF_CNT * XSPACE_UI_MSG_BUF_SIZE] = {0};
 
-/*******************************extern
- * variable/func**********************************/
+/***************************** Extern Variable/Func Declaration****************************/
 extern "C" void nv_record_print_all(void);
 extern void app_ibrt_if_event_entry(ibrt_mgr_evt_t event);
 extern "C" uint8_t is_sco_mode(void);
@@ -618,7 +621,7 @@ static void xspace_ui_gesture_freeman_right_three_click_handler(void)
 
 static void xspace_ui_gesture_freeman_left_longpress_handler(void)
 {
-    XUI_TRACE_ENTER()
+    XUI_TRACE_ENTER();
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
@@ -626,7 +629,7 @@ static void xspace_ui_gesture_freeman_left_longpress_handler(void)
 
 static void xspace_ui_gesture_freeman_right_longpress_handler(void)
 {
-    XUI_TRACE_ENTER()
+    XUI_TRACE_ENTER();
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
@@ -634,7 +637,7 @@ static void xspace_ui_gesture_freeman_right_longpress_handler(void)
 
 static void xspace_ui_gesture_freeman_left_longlongpress_handler(void)
 {
-    XUI_TRACE_ENTER()
+    XUI_TRACE_ENTER();
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
@@ -642,7 +645,7 @@ static void xspace_ui_gesture_freeman_left_longlongpress_handler(void)
 
 static void xspace_ui_gesture_freeman_right_longlongpress_handler(void)
 {
-    XUI_TRACE_ENTER()
+    XUI_TRACE_ENTER();
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
@@ -745,7 +748,7 @@ static void xspace_ui_gesture_tws_right_three_click_handler(void)
 
 static void xspace_ui_gesture_tws_left_longpress_handler(void)
 {
-    XUI_TRACE_ENTER()
+    XUI_TRACE_ENTER();
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
@@ -753,7 +756,7 @@ static void xspace_ui_gesture_tws_left_longpress_handler(void)
 
 static void xspace_ui_gesture_tws_right_longpress_handler(void)
 {
-    XUI_TRACE_ENTER()
+    XUI_TRACE_ENTER();
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
@@ -3282,7 +3285,9 @@ static void xspace_ui_init_done(void)
         }
     }
 }
-
+static const struct HAL_IOMUX_PIN_FUNCTION_MAP pinmux_i2c[] = {
+        {HAL_IOMUX_PIN_P1_2, HAL_IOMUX_FUNC_AS_GPIO, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
+};
 void xspace_ui_env_get(xui_tws_ctx_t **p_ui_env)
 {
     *p_ui_env = &xui_tws_ctx;
@@ -3406,5 +3411,9 @@ void xspace_ui_init(void)
 
 #if defined(__XSPACE_TWS_SWITCH__)
     xspace_tws_switch_process_init();
+#endif
+
+#if defined (__XSPACE_IMU_MANAGER__)
+    xspace_imu_manager_init();
 #endif
 }

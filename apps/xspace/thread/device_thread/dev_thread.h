@@ -34,6 +34,7 @@ enum dev_dodual_id_e
     DEV_MODULE_NTC,
     DEV_MODULE_BATTERY,
     DEV_MODUAL_PRESSURE,
+    DEV_MODUAL_IMU,
 
     DEV_MODUAL_NUM
 };

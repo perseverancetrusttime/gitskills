@@ -21,3 +21,7 @@ endif
 ifeq ($(XSPACE_XBUS_MANAGER),1)
 obj-y += xspace_xbus_manager/
 endif
+
+ifeq ($(XSPACE_IMU_MANAGER),1)
+obj-y += xspace_imu_manager/
+endif

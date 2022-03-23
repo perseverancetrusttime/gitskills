@@ -2460,12 +2460,16 @@ int app_media_press_mempool_get_buff(uint8_t **buff, uint32_t size)
 }
 void media_runtime_audio_prompt_update_press_dwon_up(uint16_t id){
         if( id == AUD_ID_BT_PRESSURE_DOWN){
+#if defined __GESTURE_MANAGER_USE_PRESSURE__
             g_app_audio_data_press_dwon_up = (g_language==MEDIA_DEFAULT_LANGUAGE)?(U8*)EN_BT_PROSSURE_DOWN: (U8*)EN_BT_PROSSURE_DOWN;
             g_app_audio_length_press_dwon_up = (g_language==MEDIA_DEFAULT_LANGUAGE)?sizeof(EN_BT_PROSSURE_DOWN): sizeof(EN_BT_PROSSURE_DOWN);
+#endif
         }
         else if(id ==  AUD_ID_BT_PRESSURE_UP){
+#if defined __GESTURE_MANAGER_USE_PRESSURE__
             g_app_audio_data_press_dwon_up = (g_language==MEDIA_DEFAULT_LANGUAGE)?(U8*)EN_BT_PROSSURE_UP: (U8*)EN_BT_PROSSURE_UP;
             g_app_audio_length_press_dwon_up = (g_language==MEDIA_DEFAULT_LANGUAGE)?sizeof(EN_BT_PROSSURE_UP): sizeof(EN_BT_PROSSURE_UP);
+#endif
         }else{
 		g_app_audio_data_press_dwon_up = NULL;
 		g_app_audio_length_press_dwon_up = 0;

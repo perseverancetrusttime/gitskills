@@ -16,10 +16,11 @@ typedef enum {
     XSPACE_SW_I2C = 1,
 } xspace_i2c_type_e;
 
+bool xspace_get_i2c_init_status();
 void xspace_i2c_init(void);
 bool xspace_i2c_write(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, uint8_t data);
 bool xspace_i2c_read(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, uint8_t *data);
-bool xspace_i2c_burst_write(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, uint8_t *data_buffer, uint8_t len);
+bool xspace_i2c_burst_write(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, const uint8_t *data_buffer, uint8_t len);
 bool xspace_i2c_burst_read(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr, uint8_t *data, uint16_t rx_size);
 bool xspace_i2c_write_NULL(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t reg_addr);
 bool xspace_i2c_burst_write_01(xspace_i2c_type_e i2c_type, uint8_t address, uint8_t *write_data, uint8_t write_len);

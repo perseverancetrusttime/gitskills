@@ -93,3 +93,6 @@ ifneq ($(findstring __XSPACE_TWS_SWITCH__,$(KBUILD_CPPFLAGS)), )
 ccflags-y += -Iapps/xspace/application/xspace_tws_switch
 endif
 
+ifneq ($(findstring __XSPACE_IMU_MANAGER__,$(KBUILD_CPPFLAGS)), )
+ccflags-y += -Iapps/xspace/manager/xspace_imu_manager
+endif

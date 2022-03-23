@@ -13,12 +13,10 @@ extern "C" {
 
 #if defined(__XSPACE_UI_DEBUG__)
 #define XUI_TRACE_ENTER(...)     TRACE(1, "[XUI]%s <<<", __func__)
-#define XUI_TRACE                TRACE
 #define XUI_TRACE(num, str, ...) TRACE(num + 1, "[XUI]%s," str, __func__, ##__VA_ARGS__)
 #define XUI_TRACE_EXIT(...)      TRACE(1, "[XUI]%s >>>", __func__)
 #else
 #define XUI_TRACE_ENTER(...)
-#define XUI_TRACE(...)
 #define XUI_TRACE(...)
 #define XUI_TRACE_EXIT(...)
 #endif
