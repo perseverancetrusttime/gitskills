@@ -5,7 +5,7 @@ ifeq ($(XSPACE_PROJ),1)
     KBUILD_CPPFLAGS += -D__PROJ_XSPACE__
     #Version Control
     export HARDWARE_VERSION ?= 0.0
-    export SOFTWARE_VERSION ?= 0.0.0.0
+    export SOFTWARE_VERSION ?= 0.0.0.1
     KBUILD_CPPFLAGS += -D__HARDWARE_VERSION_V1_1_20201214__
     ###################################################################
 
