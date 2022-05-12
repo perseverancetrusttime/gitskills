@@ -87,11 +87,10 @@ enum pair_event
     PAIR_EVENT_FAILED,
 };
 
-typedef void (*pairing_callback_t) (enum pair_event evt, const btif_event_t *event);
-typedef void (*authing_callback_t) (void);
-
-typedef void (*stack_ready_callback_t) (int status);
-int bt_stack_register_ready_callback(stack_ready_callback_t ready_cb);
+typedef void (*pairing_callback_t) (enum pair_event evt, const btif_event_t *event);//定义一个函数指针
+typedef void (*authing_callback_t) (void);//定义一个函数指针
+typedef void (*stack_ready_callback_t) (int status);//定义一个函数指针
+int bt_stack_register_ready_callback(stack_ready_callback_t ready_cb);//参数是函数指针
 int bt_stack_initilize(void);
 int bt_pairing_init(pairing_callback_t pair_cb);
 #ifdef BTIF_SECURITY

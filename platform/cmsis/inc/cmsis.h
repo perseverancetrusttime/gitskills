@@ -55,15 +55,15 @@ extern void int_unlock_local(uint32_t pri);
 __STATIC_FORCEINLINE uint32_t int_lock_global(void)
 {
 #ifdef __ARM_ARCH_ISA_ARM
-    uint32_t cpsr = __get_CPSR();
-    uint32_t st = cpsr & IRQ_LOCK_MASK;
+    uint32_t cpsr = __get_CPSR();//cpsr即current program status register当前程序状态寄存器
+    uint32_t st = cpsr & IRQ_LOCK_MASK;//IRQ_LOCK_MASK是C0H，取cpsr前两位
     if (st != IRQ_LOCK_MASK) {
         cpsr |= IRQ_LOCK_MASK;
-        __set_CPSR(cpsr);
+        __set_CPSR(cpsr);//将前两位置高
     }
     return st;
 #else
-	uint32_t pri = __get_PRIMASK();
+	uint32_t pri = __get_PRIMASK();//pri基群速率接口
 	if ((pri & 0x1) == 0) {
 		__disable_irq();
 	}

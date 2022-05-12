@@ -40,7 +40,7 @@
 #include "watchdog/watchdog.h"
 
 #ifdef RTOS
-#include "cmsis_os.h"
+#include "cmsis_os.h"//包含适用于rtx内核的API，rtx:real time extension
 #include "app_factory.h"
 #endif
 #ifdef CORE_DUMP_TO_FLASH

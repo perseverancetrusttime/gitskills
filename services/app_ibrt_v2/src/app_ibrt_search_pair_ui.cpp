@@ -736,12 +736,12 @@ void app_ibrt_enter_limited_mode(void)
 {
     ibrt_ctrl_t *p_ibrt_ctrl = app_tws_ibrt_get_bt_ctrl_ctx();
 
-    p_ibrt_ctrl->nv_role=IBRT_UNKNOW;
-    ibrt_mgr_set_box_state_only(IBRT_OUT_BOX);
+    p_ibrt_ctrl->nv_role=IBRT_UNKNOW;//0xff
+    ibrt_mgr_set_box_state_only(IBRT_OUT_BOX);//出盒
 
-    app_ibrt_remove_history_paired_device();
+    app_ibrt_remove_history_paired_device();//清除peer组队记录
     TRACE(0,"ibrt_ui_log:power on enter tws pairing");
-    ibrt_mgr_update_scan_type_policy(IBRT_SEARCH_SLAVE_EVT);
+    ibrt_mgr_update_scan_type_policy(IBRT_SEARCH_SLAVE_EVT);//寻找从设备
 
 }
 

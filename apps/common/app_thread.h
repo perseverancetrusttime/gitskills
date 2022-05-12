@@ -24,7 +24,7 @@ extern "C" {
 
 #define APP_MAILBOX_MAX (20)
 
-enum APP_MODUAL_ID_T {
+enum APP_MODUAL_ID_T {//app线程的所有模块的序号
     APP_MODUAL_KEY = 0,
     APP_MODUAL_AUDIO,
     APP_MODUAL_BATTERY,
@@ -79,7 +79,7 @@ typedef struct {
     APP_MESSAGE_BODY msg_body;
 } APP_MESSAGE_BLOCK;
 
-typedef int (*APP_MOD_HANDLER_T)(APP_MESSAGE_BODY *);
+typedef int (*APP_MOD_HANDLER_T)(APP_MESSAGE_BODY *);//函数指针
 
 int app_mailbox_put(APP_MESSAGE_BLOCK* msg_src);
 

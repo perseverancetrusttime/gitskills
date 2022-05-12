@@ -394,7 +394,7 @@ typedef struct
 typedef struct
 {
     ibrt_role_e init_done;
-    ibrt_role_e nv_role;
+    ibrt_role_e nv_role;//unsigned int
     uint8_t role_switch_debonce_time;
     uint16_t local_battery_volt;
     uint16_t peer_battery_volt;

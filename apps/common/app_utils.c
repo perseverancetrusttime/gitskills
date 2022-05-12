@@ -165,9 +165,9 @@ int app_sysfreq_req(enum APP_SYSFREQ_USER_T user, enum APP_SYSFREQ_FREQ_T freq)
 {
     int ret;
 
-    // if user is qos user
+    // if user is qos user，QOS是指服务质量，意即合理分配网络资源，给重要的实时性数据更好的带宽以防丢包或阻塞
     if ((1 << user) & QOS_USERS) {
-        ret = app_qosfreq_req(user, freq);
+        ret = app_qosfreq_req(user, freq);//根据用户对频率的合理需求情况配置资源级别
     } else { // if user is NOT qos user
         ret = hal_sysfreq_req((enum HAL_SYSFREQ_USER_T)user, (enum HAL_CMU_FREQ_T)freq);
     }

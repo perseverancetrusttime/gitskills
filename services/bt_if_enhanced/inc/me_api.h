@@ -448,7 +448,7 @@ typedef enum {
 #define BTIF_BTSS_DEINITIALIZE    3
 
 /* End of BtStackState */
-typedef struct { /* empty */ } btif_remote_device_t; /* used to hold the pointer to btm_conn_item_t */
+typedef struct { /* empty */ } btif_remote_device_t;//空结构体不占空间 /* used to hold the pointer to btm_conn_item_t */
 
 /* Forward declaration of the callback parameters */
 typedef struct { /* empty */ } btif_event_t; /* used to hold the pointer to event */
@@ -475,8 +475,7 @@ typedef uint8_t btif_rem_dev_state_t;
 #define BTIF_BDS_CONNECTED     0x03 /* Connected */
 #define BTIF_BDS_OUT_DISC      0x04 /* Starting an out going disconnect */
 #define BTIF_BDS_OUT_DISC2     0x05 /* Disconnect status received */
-#define BTIF_BDS_OUT_CON2      0x06 /* In SCO, used when connection request has
-                                       been sent */
+#define BTIF_BDS_OUT_CON2      0x06 /* In SCO, used when connection request has been sent */
 
 typedef uint8_t btif_eir_data_type_t;
 

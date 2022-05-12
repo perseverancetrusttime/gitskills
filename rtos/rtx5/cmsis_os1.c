@@ -330,11 +330,11 @@ osEvent osMailGet (osMailQId queue_id, uint32_t millisec) {
     return event;
   }
 
-  status = osMessageQueueGet(ptr->mq_id, &mail, NULL, millisec);
+  status = osMessageQueueGet(ptr->mq_id, &mail, NULL, millisec);//msg_ptr:pointer to buffer for message to get from a queue.
   switch (status) {
     case osOK:
       event.status = osEventMail;
-      event.value.p = mail;
+      event.value.p = mail;//返回指针
       break;
     case osErrorResource:
       event.status = osOK;

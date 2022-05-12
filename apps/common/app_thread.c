@@ -26,7 +26,7 @@
 #define APP_THREAD_STACK_SIZE 3072
 #endif
 
-static APP_MOD_HANDLER_T mod_handler[APP_MODUAL_NUM];
+static APP_MOD_HANDLER_T mod_handler[APP_MODUAL_NUM];//函数指针数组
 
 static void app_thread(void const *argument);
 osThreadDef(app_thread, osPriorityHigh, 1, APP_THREAD_STACK_SIZE, "app_thread");
@@ -122,7 +122,7 @@ int app_mailbox_get(APP_MESSAGE_BLOCK** msg_p)
     osEvent evt;
     evt = osMailGet(app_mailbox, osWaitForever);
     if (evt.status == osEventMail) {
-        *msg_p = (APP_MESSAGE_BLOCK *)evt.value.p;
+        *msg_p = (APP_MESSAGE_BLOCK *)evt.value.p;//指针p从void转为APP_MESSAGE_BLOCK类型的指针
         return 0;
     }
     return -1;
@@ -131,12 +131,12 @@ int app_mailbox_get(APP_MESSAGE_BLOCK** msg_p)
 static void app_thread(void const *argument)
 {
     while(1){
-        APP_MESSAGE_BLOCK *msg_p = NULL;
+        APP_MESSAGE_BLOCK *msg_p = NULL;//线程信息块，包含起始与终止线程、模块ID、线程消息序号等
 
         if (!app_mailbox_get(&msg_p)) {
             if (msg_p->mod_id < APP_MODUAL_NUM) {
                 if (mod_handler[msg_p->mod_id]) {
-                    int ret = mod_handler[msg_p->mod_id](&(msg_p->msg_body));
+                    int ret = mod_handler[msg_p->mod_id](&(msg_p->msg_body));//进行模块具体函数调用
                     if (ret)
                         TRACE(2,"mod_handler[%d] ret=%d", msg_p->mod_id, ret);
                 }
@@ -159,7 +159,7 @@ int app_os_init(void)
     return 0;
 }
 
-int app_set_threadhandle(enum APP_MODUAL_ID_T mod_id, APP_MOD_HANDLER_T handler)
+int app_set_threadhandle(enum APP_MODUAL_ID_T mod_id, APP_MOD_HANDLER_T handler)//mod_id是否有经过邮件传送过来？
 {
     if (mod_id>=APP_MODUAL_NUM)
         return -1;

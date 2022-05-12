@@ -864,7 +864,7 @@ osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uin
 osStatus_t osMessageQueueGet (osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout) {
   osStatus_t status;
 
-  EvrRtxMessageQueueGet(mq_id, msg_ptr, msg_prio, timeout);
+  EvrRtxMessageQueueGet(mq_id, msg_ptr, msg_prio, timeout);//msg_ptr:pointer to buffer for message to get from a queue.
   if (IsIrqMode() || IsIrqMasked()) {
     status = isrRtxMessageQueueGet(mq_id, msg_ptr, msg_prio, timeout);
   } else {

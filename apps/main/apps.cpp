@@ -437,7 +437,7 @@ int signal_send_to_main_thread(uint32_t signals);
 uint8_t stack_ready_flag = 0;
 void app_notify_stack_ready(uint8_t ready_flag)
 {
-    TRACE(2,"app_notify_stack_ready %d %d", stack_ready_flag, ready_flag);
+    TRACE(2,"app_notify_stack_ready %d %d", stack_ready_flag, ready_flag);//在log里面没有输出
 
     stack_ready_flag |= ready_flag;
 
@@ -2615,16 +2615,16 @@ extern int rpc_service_setup(void);
 #ifdef IBRT_SEARCH_UI
                     if(is_charging_poweron==false)
                     {
-                        if(IBRT_UNKNOW == nvrecord_env->ibrt_mode.mode)
+                        if(IBRT_UNKNOW == nvrecord_env->ibrt_mode.mode)//未配对过对耳
                         {
                             TRACE(0,"ibrt_ui_log:power on unknow mode");
                             app_ibrt_enter_limited_mode();
                         }
-                        else
+                        else//已配对过对耳，接下来出盒与手机配对或连接
                         {
                             TRACE(1,"ibrt_ui_log:power on %d fetch out", nvrecord_env->ibrt_mode.mode);
-#ifdef SEARCH_UI_COMPATIBLE_UI_V2
-                            app_ibrt_if_event_entry(IBRT_MGR_EV_UNDOCK);
+#ifdef SEARCH_UI_COMPATIBLE_UI_V2//进入与手机的配对或回连模式
+                            app_ibrt_if_event_entry(IBRT_MGR_EV_UNDOCK);//只是一个接口
 #else
                             app_ibrt_ui_event_entry(IBRT_FETCH_OUT_EVENT);
 #endif

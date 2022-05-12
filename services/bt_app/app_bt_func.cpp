@@ -210,16 +210,16 @@ static btif_remote_device_t* pendingRemoteDevToExitSniffMode[COUNT_OF_PENDING_RE
 static uint8_t  maskOfRemoteDevPendingForExitingSniffMode = 0;
 void app_check_pending_stop_sniff_op(void)
 {
-    if (maskOfRemoteDevPendingForExitingSniffMode > 0)
+    if (maskOfRemoteDevPendingForExitingSniffMode > 0)//等待退出呼吸模式的远端设备有掩码
     {
-        for (uint8_t index = 0;index < COUNT_OF_PENDING_REMOTE_DEV_TO_EXIT_SNIFF_MODE;index++)
+        for (uint8_t index = 0;index < COUNT_OF_PENDING_REMOTE_DEV_TO_EXIT_SNIFF_MODE;index++)//依次遍历这些远端设备
         {
-            if (maskOfRemoteDevPendingForExitingSniffMode & (1 << index))
+            if (maskOfRemoteDevPendingForExitingSniffMode & (1 << index))//第0个不满足
             {
                 btif_remote_device_t* remDev = pendingRemoteDevToExitSniffMode[index];
-                if (!btif_me_is_op_in_progress(remDev))
+                if (!btif_me_is_op_in_progress(remDev))//本地设备没有在程序中执行
                 {
-                    if (btif_me_get_remote_device_state(remDev) == BTIF_BDS_CONNECTED){
+                    if (btif_me_get_remote_device_state(remDev) == BTIF_BDS_CONNECTED){//远端设备与本地设备已连接
                         if (btif_me_get_current_mode(remDev) == BTIF_BLM_SNIFF_MODE){
                             TRACE(1,"!!! stop sniff currmode:%d\n",  btif_me_get_current_mode(remDev));
                             bt_status_t ret = btif_me_stop_sniff(remDev);

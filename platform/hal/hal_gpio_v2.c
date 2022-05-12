@@ -33,6 +33,8 @@
 
 #define HAL_GPIO_BANK_NUM                   ARRAY_SIZE(gpio_bank)
 
+//TRACE(0,"hello!")
+
 static struct GPIO_BANK_T * const gpio_bank[] = {
     (struct GPIO_BANK_T *)GPIO_BASE,
 #ifdef GPIO1_BASE

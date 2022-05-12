@@ -346,7 +346,7 @@ static void add_randomness(void)
     srand(generatedSeed);
 }
 
-static void __set_bt_sco_num(void)
+static void __set_bt_sco_num(void)//sco连接允许主单元连接三个从单元，从单元可以连接两个主单元
 {
     uint8_t sco_num = 1;
 #if defined(__BT_ONE_BRING_TWO__)
@@ -355,9 +355,11 @@ static void __set_bt_sco_num(void)
     sco_num = 2;
 #endif
     bt_set_max_sco_number(sco_num);
+    TRACE(1,"sco_num=%d\n",sco_num);
 }
 
 void app_notify_stack_ready(uint8_t ready_flag);
+
 static void stack_ready_callback(int status)
 {
     dev_addr_name devinfo;
@@ -383,7 +385,7 @@ static void stack_ready_callback(int status)
     app_init_ble_name(devinfo.ble_name);
 #endif
 
-    app_notify_stack_ready(STACK_READY_BT);
+    app_notify_stack_ready(STACK_READY_BT);//经典蓝牙的协议栈准备完成
 }
 
 void l2cap_process_echo_req_func(uint8_t device_id, uint16_t conhdl, uint8_t id, uint16_t len, uint8_t *data)
@@ -426,41 +428,41 @@ int besmain(void)
 #if defined(GET_PEER_RSSI_ENABLE)
     uint32_t checkerRssiTick = 0;
 #endif
-#if !defined(BLE_ONLY_ENABLED)
-#ifdef A2DP_CP_ACCEL
+#if !defined(BLE_ONLY_ENABLED)//未定义低功耗 
+#ifdef A2DP_CP_ACCEL//未定义低功耗&定义了？？
     sysfreq = APP_SYSFREQ_26M;
-#else
+#else//未定义低功耗和？？
     sysfreq = APP_SYSFREQ_52M;
 #endif
-#else
+#else//定义了低功耗
     sysfreq = APP_SYSFREQ_26M;
 #endif
 
-    BESHCI_Open();
+    BESHCI_Open();//主机控制器接口
 #if defined( TX_RX_PCM_MASK)
     if(btdrv_is_pcm_mask_enable()==1)
         hal_intersys_mic_open(HAL_INTERSYS_ID_1,store_encode_frame2buff);
 #endif
-    __set_bt_sco_num();
+    __set_bt_sco_num();//设置连接从单元方式：一拖二/多点接入
     add_randomness();
 
 #ifdef __IAG_BLE_INCLUDE__
     bes_ble_init();
 #endif
 
-    btif_set_btstack_chip_config(bt_drv_get_btstack_chip_config());
+    btif_set_btstack_chip_config(bt_drv_get_btstack_chip_config());//通过HCI接口去调用驱动来获取蓝牙协议栈的设置SCO路径的地址
 
 #if defined(__GATT_OVER_BR_EDR__)
-    btif_config_gatt_over_br_edr(true);
+    btif_config_gatt_over_br_edr(true);//GATT设置设备的可发现、建立或断开连接、初始化安全管理、设备配置
 #endif
 
-    app_bt_manager_init();
+    app_bt_manager_init();//A2DP、SCO连接配置
 
     /* bes stack init */
-    bt_stack_initilize();
+    bt_stack_initilize();//接口
 
-    bt_stack_register_ready_callback(stack_ready_callback);
-    btif_sdp_init();
+    bt_stack_register_ready_callback(stack_ready_callback);//回调！！！传递函数名（即函数指针）
+    btif_sdp_init();//初始化服务发现协议
 
     btif_cmgr_handler_init();
 
@@ -491,9 +493,7 @@ int besmain(void)
 #endif
 
     /* pair callback init */
-    bt_pairing_init(pair_handler_func);
-    bt_authing_init(auth_handler_func);
-
+    bt_pairing_init(pair_handler_func);//回调函数，传递函数名（数指针 ）
 #ifdef BT_HID_DEVICE
     app_bt_hid_init();
 #endif
@@ -506,7 +506,7 @@ int besmain(void)
     app_bt_pbap_init();
 #endif
 
-    btif_l2cap_echo_init(l2cap_process_echo_req_func, l2cap_process_echo_res_func,l2cap_fill_in_echo_req_data_func);
+    btif_l2cap_echo_init(l2cap_process_echo_req_func, l2cap_process_echo_res_func,l2cap_fill_in_echo_req_data_func);//三个函数指针传递过去
 
 #if defined(IBRT)
     app_ibrt_set_cmdhandle(TWS_CMD_IBRT, app_ibrt_cmd_table_get);
@@ -526,61 +526,65 @@ int besmain(void)
 #endif
 
     ///init bt key
-    bt_key_init();
+    bt_key_init();//秘钥初始化，全1
 #ifdef TEST_OVER_THE_AIR_ENANBLED
     app_tota_init();
 #endif
-    osapi_notify_evm();
+    osapi_notify_evm();//不知道是？？？接口
     while(1) {
         app_sysfreq_req(APP_SYSFREQ_USER_BT_MAIN, APP_SYSFREQ_32K);
         osMessageGet(evm_queue_id, osWaitForever);
-        app_sysfreq_req(APP_SYSFREQ_USER_BT_MAIN, sysfreq);
+        app_sysfreq_req(APP_SYSFREQ_USER_BT_MAIN, sysfreq);//sysfreq=26K或52K
         //    BESHCI_LOCK_TX();
-#ifdef __LOCK_AUDIO_THREAD__
-        bool stream_a2dp_sbc_isrun = app_bt_stream_isrun(APP_BT_STREAM_A2DP_SBC);
-        if (stream_a2dp_sbc_isrun) {
-            af_lock_thread();
-        }
-#endif
-        bt_process_stack_events();
+        #ifdef __LOCK_AUDIO_THREAD__
+                bool stream_a2dp_sbc_isrun = app_bt_stream_isrun(APP_BT_STREAM_A2DP_SBC);//编解码方式SBC
+                if (stream_a2dp_sbc_isrun) {
+                    af_lock_thread();
+                }
+        #endif
+                bt_process_stack_events();
 
-#ifdef __IAG_BLE_INCLUDE__
-        bes_ble_schedule();
-#endif
+        #ifdef __IAG_BLE_INCLUDE__
+                bes_ble_schedule();
+        #endif
 
-        Besbt_hook_proc();
+                Besbt_hook_proc();//等级用户事件的执行
 
-#ifdef __LOCK_AUDIO_THREAD__
-        if (stream_a2dp_sbc_isrun) {
-            af_unlock_thread();
-        }
-#endif
+        #ifdef __LOCK_AUDIO_THREAD__
+                if (stream_a2dp_sbc_isrun) {
+                    af_unlock_thread();
+                }
+        #endif
 
-#if defined(IBRT)
-        app_ibrt_data_send_handler();
-        app_ibrt_data_receive_handler();
-#if defined(IBRT_UI_V1)
-        app_ibrt_ui_controller_dbg_state_checker();
-        app_ibrt_ui_stop_ibrt_condition_checker();
-#endif
-#endif
-        app_check_pending_stop_sniff_op();
+
+
+        #if defined(IBRT)
+                app_ibrt_data_send_handler();
+                app_ibrt_data_receive_handler();
+        #if defined(IBRT_UI_V1)
+                app_ibrt_ui_controller_dbg_state_checker();
+                app_ibrt_ui_stop_ibrt_condition_checker();
+        #endif
+        #endif
+
+
+        app_check_pending_stop_sniff_op();//检查是否停止呼吸模式
         if(TICKS_TO_MS(hal_sys_timer_get()-checkerSysTick) > BT_STATE_CHECKER_INTERVAL_MS) {
-            if (app_is_stack_ready())
+            if (app_is_stack_ready())//蓝牙协议栈准备好了
             {
                 app_bt_state_checker();
             }
             checkerSysTick = hal_sys_timer_get();
         }
 
-#if defined(GET_PEER_RSSI_ENABLE)
-        if(TICKS_TO_MS(hal_sys_timer_get()-checkerRssiTick) > GET_PEER_RSSI_CMD_INTERVAL_MS) {
-            if (app_tws_is_connected())
-            {
-                app_bt_ibrt_rssi_status_checker();
-            }
-            checkerRssiTick = hal_sys_timer_get();
-        }
+        #if defined(GET_PEER_RSSI_ENABLE)
+                if(TICKS_TO_MS(hal_sys_timer_get()-checkerRssiTick) > GET_PEER_RSSI_CMD_INTERVAL_MS) {
+                    if (app_tws_is_connected())
+                    {
+                        app_bt_ibrt_rssi_status_checker();
+                    }
+                    checkerRssiTick = hal_sys_timer_get();
+                }
 #endif
     }
 

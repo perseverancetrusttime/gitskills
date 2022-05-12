@@ -92,7 +92,7 @@ extern void AES128_ECB_decrypt(uint8_t *input, const uint8_t *key, uint8_t *outp
  * Return:
  *    void
  */
-static void gfps_ble_data_fill_handler(void *param);
+static void gfps_ble_data_fill_handler(void *param);//GFPS：Google Fast Pair Service，利用BLE来发现附近的设备，从而不需要大量消耗手机电量
 
 /************************private variable defination************************/
 struct app_gfps_env_tag app_gfps_env;

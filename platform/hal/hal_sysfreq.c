@@ -75,22 +75,24 @@ int hal_sysfreq_req(enum HAL_SYSFREQ_USER_T user, enum HAL_CMU_FREQ_T freq)
 
     if (freq == cur_sys_freq) {
         top_user = user;
-    } else if (freq > cur_sys_freq) {
+    }
+     else if (freq > cur_sys_freq) {
         top_user = user;
         freq = hal_sysfreq_revise_freq(freq);
         cur_sys_freq = hal_sysfreq_revise_freq(cur_sys_freq);
         // It is possible that revised freq <= revised cur_sys_freq (e.g., when cur_sys_freq=32K)
         if (freq != cur_sys_freq) {
-#if !defined(ROM_BUILD) && !defined(CHIP_SUBSYS_SENS)
-            pmu_sys_freq_config(freq);
-#endif
-#ifdef ULTRA_LOW_POWER
-            // Enable PLL if required
-            hal_cmu_low_freq_mode_disable(cur_sys_freq, freq);
-#endif
-            hal_cmu_sys_set_freq(freq);
+            #if !defined(ROM_BUILD) && !defined(CHIP_SUBSYS_SENS)
+                        pmu_sys_freq_config(freq);
+            #endif
+            #ifdef ULTRA_LOW_POWER
+                        // Enable PLL if required
+                        hal_cmu_low_freq_mode_disable(cur_sys_freq, freq);
+            #endif
+                        hal_cmu_sys_set_freq(freq);
         }
-    } else /* if (freq < cur_sys_freq) */ {
+    } 
+    else /* if (freq < cur_sys_freq) */ {
         if (top_user == user || top_user == HAL_SYSFREQ_USER_QTY) {
             if (top_user == user) {
                 freq = sysfreq_per_user[0];

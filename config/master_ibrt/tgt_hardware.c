@@ -165,9 +165,9 @@ const struct HAL_KEY_GPIOKEY_CFG_T cfg_hw_gpio_key_cfg[CFG_HW_GPIOKEY_NUM] = {
 //bt config
 const char *BT_LOCAL_NAME = TO_STRING(BT_DEV_NAME) "\0";
 #if defined (__XSPACE_AUTO_TEST__)
-const char *BLE_DEFAULT_NAME = "BO001_AUTO_TEST";
+const char *BLE_DEFAULT_NAME = "BO001_AUTO_TESTTTTTTTT";
 #else
-const char *BLE_DEFAULT_NAME = "MASTER_BRANCH";
+const char *BLE_DEFAULT_NAME = "MASTER_BRANCHHHHHHHHHH";
 #endif
 
 uint8_t ble_addr[6] = {

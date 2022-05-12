@@ -268,8 +268,9 @@ typedef union
 #define CPSR_A_Pos                       8U                                     /*!< \brief CPSR: A Position */
 #define CPSR_A_Msk                       (1UL << CPSR_A_Pos)                    /*!< \brief CPSR: A Mask */
 
-#define CPSR_I_Pos                       7U                                     /*!< \brief CPSR: I Position */
-#define CPSR_I_Msk                       (1UL << CPSR_I_Pos)                    /*!< \brief CPSR: I Mask */
+#define CPSR_I_Pos                       7U       //无符号整型7                  /*!< \brief CPSR: I Position */
+#define CPSR_I_Msk                       (1UL << CPSR_I_Pos) //1个无符号长整形1，左移7个无符号整形的位置
+                                                                                  /*!< \brief CPSR: I Mask */
 
 #define CPSR_F_Pos                       6U                                     /*!< \brief CPSR: F Position */
 #define CPSR_F_Msk                       (1UL << CPSR_F_Pos)                    /*!< \brief CPSR: F Mask */
@@ -278,7 +279,7 @@ typedef union
 #define CPSR_T_Msk                       (1UL << CPSR_T_Pos)                    /*!< \brief CPSR: T Mask */
 
 #define CPSR_M_Pos                       0U                                     /*!< \brief CPSR: M Position */
-#define CPSR_M_Msk                       (0x1FUL << CPSR_M_Pos)                 /*!< \brief CPSR: M Mask */
+#define CPSR_M_Msk                       (0x1FUL << CPSR_M_Pos) //F表示浮点数    /*!< \brief CPSR: M Mask */
 
 #define CPSR_M_USR                       0x10U                                  /*!< \brief CPSR: M User mode (PL0) */
 #define CPSR_M_FIQ                       0x11U                                  /*!< \brief CPSR: M Fast Interrupt mode (PL1) */
@@ -807,7 +808,7 @@ typedef struct
 typedef struct
 {
   __IOM uint32_t CTLR;                 /*!< \brief  Offset: 0x000 (R/W) CPU Interface Control Register */
-  __IOM uint32_t PMR;                  /*!< \brief  Offset: 0x004 (R/W) Interrupt Priority Mask Register */
+  __IOM uint32_t PMR;               //中断优先级的设置  /*!< \brief  Offset: 0x004 (R/W) Interrupt Priority Mask Register */
   __IOM uint32_t BPR;                  /*!< \brief  Offset: 0x008 (R/W) Binary Point Register */
   __IM  uint32_t IAR;                  /*!< \brief  Offset: 0x00C (R/ ) Interrupt Acknowledge Register */
   __OM  uint32_t EOIR;                 /*!< \brief  Offset: 0x010 ( /W) End Of Interrupt Register */
@@ -1373,9 +1374,9 @@ __STATIC_INLINE void GIC_SetInterfacePriorityMask(uint32_t priority)
 /** \brief Read the current interrupt priority mask from CPU's PMR register.
 * \result GICInterface_Type::PMR
 */
-__STATIC_INLINE uint32_t GIC_GetInterfacePriorityMask(void)
+__STATIC_INLINE uint32_t GIC_GetInterfacePriorityMask(void)//GIC即general interrupt controller
 {
-  return GICInterface->PMR;
+  return GICInterface->PMR;//申请priority manage register
 }
 
 /** \brief Configures the group priority and subpriority split point using CPU's BPR register.

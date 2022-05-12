@@ -231,7 +231,7 @@ void app_bt_reset_profile_manager(struct app_bt_profile_manager *mgr)
 
 void app_bt_init_config_postphase(struct app_bt_config *config);
 
-static void app_bt_init_config(struct app_bt_config *config)
+static void app_bt_init_config(struct app_bt_config *config)//A2DP、SCO的连接配置
 {
     config->a2dp_default_abs_volume = a2dp_convert_local_vol_to_bt_vol(AUDIO_OUTPUT_VOLUME_DEFAULT);
 
@@ -245,7 +245,7 @@ static void app_bt_init_config(struct app_bt_config *config)
 
     config->sco_prompt_play_mode = true;
 
-    config->keep_only_one_sco_link = true;
+    config->keep_only_one_sco_link = true;//只开一条SCO链路
 
     config->pause_bg_a2dp_stream = false;
 
@@ -276,44 +276,44 @@ static void app_bt_init_config(struct app_bt_config *config)
 #endif
 
 #if defined(BT_BLOCK_2ND_SCO_BEFORE_CALL_ACTIVE)
-    // only accept 2nd sco after call active, let user choise to accept 2nd call or not
+    // only accept 2nd sco after call active, let user choose to accept 2nd call or not
     config->block_2nd_sco_before_call_active = true;
 #endif
 
-    if (config->a2dp_prompt_play_mode)
+    if (config->a2dp_prompt_play_mode)//A2DP立即播放模式？
     {
-#if defined(BT_PAUSE_BG_A2DP)
-        config->pause_bg_a2dp_stream = true;
-#elif defined(BT_CLOSE_BG_A2DP)
-        config->close_bg_a2dp_stream = true;
-#endif
+        #if defined(BT_PAUSE_BG_A2DP)
+                config->pause_bg_a2dp_stream = true;
+        #elif defined(BT_CLOSE_BG_A2DP)
+                config->close_bg_a2dp_stream = true;
+        #endif
 
-#if defined(BT_DONT_AUTO_PLAY_BG_A2DP)
-        config->dont_auto_play_bg_a2dp = true;
-#endif
+        #if defined(BT_DONT_AUTO_PLAY_BG_A2DP)
+                config->dont_auto_play_bg_a2dp = true;
+        #endif
 
-#if defined(A2DP_PROMPT_PLAY_ONLY_AVRCP_PLAY_RECEIVED)
-        config->a2dp_prompt_play_only_when_avrcp_play_received = true;
-#endif
+        #if defined(A2DP_PROMPT_PLAY_ONLY_AVRCP_PLAY_RECEIVED)
+                config->a2dp_prompt_play_only_when_avrcp_play_received = true;
+        #endif
 
-#if defined(A2DP_DELAY_PROMPT_PLAY)
-        config->a2dp_delay_prompt_play = true;
-        config->a2dp_prompt_delay_ms = APP_BT_A2DP_PROMPT_DELAY_MS;
-#endif
+        #if defined(A2DP_DELAY_PROMPT_PLAY)
+                config->a2dp_delay_prompt_play = true;
+                config->a2dp_prompt_delay_ms = APP_BT_A2DP_PROMPT_DELAY_MS;
+        #endif
     }
     else
     {
-#if defined(BT_KEEP_ONE_STREAM_CLOSE_CONNECTED_A2DP)
-        config->keep_only_one_stream_close_connected_a2dp = true;
-        config->close_new_a2dp_stream = true;
-        config->pause_old_a2dp_when_new_sco_connected = true;
-#elif defined(BT_MUTE_NEW_A2DP)
-        config->mute_new_a2dp_stream = true;
-#elif defined(BT_PAUSE_NEW_A2DP)
-        config->pause_new_a2dp_stream = true;
-#elif defined(BT_CLOSE_NEW_A2DP)
-        config->close_new_a2dp_stream = true;
-#endif
+        #if defined(BT_KEEP_ONE_STREAM_CLOSE_CONNECTED_A2DP)
+                config->keep_only_one_stream_close_connected_a2dp = true;
+                config->close_new_a2dp_stream = true;
+                config->pause_old_a2dp_when_new_sco_connected = true;
+        #elif defined(BT_MUTE_NEW_A2DP)
+                config->mute_new_a2dp_stream = true;
+        #elif defined(BT_PAUSE_NEW_A2DP)
+                config->pause_new_a2dp_stream = true;
+        #elif defined(BT_CLOSE_NEW_A2DP)
+                config->close_new_a2dp_stream = true;
+        #endif
     }
 }
 
@@ -336,7 +336,7 @@ void app_bt_manager_init(void)
     struct BT_DEVICE_RECONNECT_T *reconnect_node;
     int i = 0;
 
-    memset(&app_bt_manager, 0, sizeof(app_bt_manager));
+    memset(&app_bt_manager, 0, sizeof(app_bt_manager));//初始化地址清零
 
     app_bt_init_config(&app_bt_manager.config);
 
@@ -576,12 +576,12 @@ static void app_bt_device_report_acl_connected(uint8_t errcode, btif_remote_devi
     {
         curr_device = app_bt_get_device(device_id);
 
-        if (errcode == BTIF_BEC_ACL_ALREADY_EXISTS)
+        if (errcode == BTIF_BEC_ACL_ALREADY_EXISTS)//acl已连接
         {
             return;
         }
 
-        if (errcode == BTIF_BEC_NO_ERROR)
+        if (errcode == BTIF_BEC_NO_ERROR)//fine
         {
             curr_device->acl_is_connected = true;
             curr_device->acl_conn_hdl = btif_me_get_remote_device_hci_handle(rem_dev);
@@ -613,7 +613,7 @@ static void app_bt_device_report_acl_connected(uint8_t errcode, btif_remote_devi
             return;
         }
 
-        curr_device->acl_is_connected = false;
+        curr_device->acl_is_connected = false;//wrong
 
 #ifdef RESUME_MUSIC_AFTER_CRASH_REBOOT
         app_bt_reset_curr_playback_device(device_id);
@@ -1224,7 +1224,7 @@ const char *app_bt_get_device_current_roles(void)
     ibrt_ctrl_t *p_ibrt_ctrl = app_ibrt_if_get_bt_ctrl_ctx();
     if (p_ibrt_ctrl->current_role == IBRT_UNKNOW)
     {
-        return "ff";
+        return "ff";//255
     }
     return p_ibrt_ctrl->current_role == IBRT_MASTER ? "0" : "1";
 #else
@@ -1330,9 +1330,10 @@ void app_bt_ibrt_mobile_link_state_checker(void)
         }
         TRACE(8, "link_state: %s [d%x] %02x:%02x:%02x:%02x:%02x:%02x acl %d state unknown",
               mobile_role_str, i,
-              mobile_addr->address[0], mobile_addr->address[0], mobile_addr->address[0],
-              mobile_addr->address[0], mobile_addr->address[0], mobile_addr->address[0],
+              mobile_addr->address[0], mobile_addr->address[1], mobile_addr->address[2],
+              mobile_addr->address[3], mobile_addr->address[4], mobile_addr->address[5],
               curr_device->acl_is_connected);
+        TRACE(2,"p_mobile_info->ibrt_conhandle=%d,p_mobile_info->mobile_conhandle=%d",p_mobile_info->ibrt_conhandle,p_mobile_info->mobile_conhandle);
     }
 #endif
 }
@@ -1664,7 +1665,7 @@ void PairingTransferToConnectable(void)
 
 int app_bt_state_checker(void)
 {
-    if (!besbt_cfg.bt_sink_enable)
+    if (!besbt_cfg.bt_sink_enable)//没有开启耳机的sink接收数据的身份
     {
         return 0;
     }
@@ -1672,7 +1673,7 @@ int app_bt_state_checker(void)
 #if defined(IBRT)
     ibrt_ctrl_t *p_ibrt_ctrl = app_tws_ibrt_get_bt_ctrl_ctx();
 #if IBRT_UI_V1
-    if (app_tws_ibrt_mobile_link_connected())
+    if (app_tws_ibrt_mobile_link_connected())//通过ibrt与主耳机连接成功
     {
         TRACE(2,"checker: IBRT_MASTER activeCons:%d profileExchanged:%d", btif_me_get_activeCons(), app_ibrt_ui_is_profile_exchanged());
     }
@@ -1685,6 +1686,20 @@ int app_bt_state_checker(void)
         TRACE(1,"checker: IBRT_UNKNOW activeCons:%d", btif_me_get_activeCons());
     }
 #else
+/*
+TRACE(0,"hello!");
+TRACE(0,"hello!");
+TRACE(0,"hello!");
+TRACE(0,"hello!");
+
+for (int i=0;i<16;i++)
+{
+    TRACE(1,"mobile_linkKey%d=%d",i,p_ibrt_ctrl->mobile_linkKey[i]);
+}
+
+TRACE(3,"p_tws_remote_dev=%p\n",p_ibrt_ctrl->p_tws_remote_dev);//输出空结构体
+
+*/
     TRACE(3,"checker: TWS_PARAMS slot:%d, interval:0x%x, interval in sco:0x%x",p_ibrt_ctrl->acl_slot_num, p_ibrt_ctrl->acl_interval, p_ibrt_ctrl->acl_interval_in_sco);
     TRACE(1,"checker: IBRT_MULTIPOINT FREQ=%d activeCons:%d profile_exchanged:%s",hal_sysfreq_get(), btif_me_get_activeCons(), app_bt_get_profile_exchanged_state());
 #endif

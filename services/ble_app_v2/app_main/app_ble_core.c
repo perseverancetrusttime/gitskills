@@ -209,6 +209,8 @@ static void ble_adv_stopped_event_handler(ble_event_t *event, void *output)
     // Indicate that adv has been stopped success
 }
 
+
+
 static void ble_scan_started_event_handler(ble_event_t *event, void *output)
 {
     // Indicate that scan has been started success

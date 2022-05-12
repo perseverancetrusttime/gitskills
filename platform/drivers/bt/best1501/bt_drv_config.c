@@ -740,8 +740,8 @@ const struct hci_dbg_set_sw_rssi_cmd  sw_rssi_work_test_mode =
 };
 
 struct bt_cmd_chip_config_t g_bt_drv_btstack_chip_config = {
-    HCI_DBG_SET_SYNC_CONFIG_CMD_OPCODE,
-    HCI_DBG_SET_SCO_SWITCH_CMD_OPCODE,
+    HCI_DBG_SET_SYNC_CONFIG_CMD_OPCODE,//设置SCO连接路径
+    HCI_DBG_SET_SCO_SWITCH_CMD_OPCODE,//改变SCO连接路径
 };
 
 static BTDRV_CFG_TBL_STRUCT  btdrv_cfg_tbl[] =

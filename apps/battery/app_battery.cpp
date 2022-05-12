@@ -145,7 +145,7 @@ struct APP_BATTERY_MEASURE_T
     HAL_GPADC_MV_T voltage[APP_BATTERY_STABLE_COUNT];
     uint16_t index;
     struct APP_BATTERY_MEASURE_CHARGER_STATUS_T charger_status;
-    APP_BATTERY_EVENT_CB_T cb;
+    APP_BATTERY_EVENT_CB_T cb;//函数指针
     APP_BATTERY_CB_T user_cb;
 };
 
