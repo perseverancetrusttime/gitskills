@@ -50,7 +50,7 @@ int32_t gh61x_adapter_report_inear_status(bool is_wearing)
         return -1;
     }
     
-    gh61x_inear_status_event_cb(is_wearing);
+    gh61x_inear_status_event_cb(is_wearing);//“已佩戴”是否为真
 
     return 0;
 }

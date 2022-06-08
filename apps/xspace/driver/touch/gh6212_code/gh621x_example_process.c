@@ -192,11 +192,11 @@ GS8 Gh621xModuleInit(void)
 void Gh621xModuleStart(GU8 uchGetRawdataEnable)
 {
     GS8 chRet;
-    Gh621xSetMcuModeRawdataEnable(uchGetRawdataEnable);
+    Gh621xSetMcuModeRawdataEnable(uchGetRawdataEnable);//只是一个接口
     chRet = Gh621xStartDetect();
-    if (chRet == GH621X_RET_NO_INITED_ERROR)
+    if (chRet == GH621X_RET_NO_INITED_ERROR)//没有初始化
     {
-        chRet = Gh621xModuleInit(); // retry one times
+        chRet = Gh621xModuleInit(); // retry one times//先初始化再开始
         if (chRet == GH621X_RET_OK)
         {
             chRet = Gh621xStartDetect();
@@ -822,16 +822,16 @@ void Gh621xModuleIntMsgHandler(void)
                 {
                     Gh621xModuleEventInfoInit();
                     if (Gh621xModuleIsTkEvent(usGh621xIrqStatus))
-                    {
-                        Gh621xModuleTkEvtHandler(usGh621xIrqStatus);
+                        {
+                        Gh621xModuleTkEvtHandler(usGh621xIrqStatus);//触摸
                     }
                     if (Gh621xModuleIsForceEvent(usGh621xIrqStatus))
                     {
-                        Gh621xModuleForceEvtHandler(usGh621xIrqStatus);
+                        Gh621xModuleForceEvtHandler(usGh621xIrqStatus);//压感
                     }
                     if (Gh621xModuleIsWearEvent(usGh621xIrqStatus))
                     {
-                        Gh621xModuleWearEvtHandler(usGh621xIrqStatus);
+                        Gh621xModuleWearEvtHandler(usGh621xIrqStatus);//佩戴
                     }
 
                     //rawdata bit
@@ -1048,7 +1048,7 @@ void Gh621xOffsetSelfCalibrationInChargingBox(void)
  *
  * @return  None
  */
-void Gh621xModuleUsingPowerOnOffset(GU8 enablePowerOnOffset)
+void Gh621xModuleUsingPowerOnOffset(GU8 enablePowerOnOffset)//触摸传感器模块的电源补偿
 {
     GU16 temp = 0;
     GU8 i;

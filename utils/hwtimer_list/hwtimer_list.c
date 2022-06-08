@@ -144,7 +144,7 @@ void hwtimer_init(void)
         return ;
     }
     hwtimer_inited = true;
-    for (i = 0; i < HWTIMER_NUM - 1; i++) {
+    for (i = 0; i < HWTIMER_NUM - 1; i++) {//10个定时器
         hwtimer_list.timer[i].state = HWTIMER_STATE_FREE;
         hwtimer_list.timer[i].next = &hwtimer_list.timer[i + 1];
     }

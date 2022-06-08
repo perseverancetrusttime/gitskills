@@ -468,14 +468,14 @@ osTimerId app_bt_stream_trigger_timeout_id = NULL;
 static void app_bt_stream_trigger_timeout_cb(void const *n)
 {
     TRACE_AUD_STREAM_I("[STRM_TRIG][CHK]timeout_cb\n");
-    if (app_bt_stream_isrun(APP_BT_STREAM_A2DP_SBC)){
+    if (app_bt_stream_isrun(APP_BT_STREAM_A2DP_SBC)){//听音频
         TRACE_AUD_STREAM_I("[STRM_TRIG][CHK]-->A2DP_SBC\n");
 #if defined(IBRT)
         app_ibrt_if_force_audio_retrigger(RETRIGGER_BY_TRIGGER_FAIL);
 #else
         app_audio_sendrequest_param(APP_BT_STREAM_A2DP_SBC, (uint8_t)APP_BT_SETTING_RESTART, 0, 0);
 #endif
-    }else if (app_bt_stream_isrun(APP_BT_STREAM_HFP_PCM)){
+    }else if (app_bt_stream_isrun(APP_BT_STREAM_HFP_PCM)){//打电话
         TRACE_AUD_STREAM_I("[STRM_TRIG][CHK]-->HFP_PCM\n");
 #ifndef HFP_AG_TEST
         app_audio_sendrequest(APP_BT_STREAM_HFP_PCM, (uint8_t)APP_BT_SETTING_RESTART, 0);
@@ -8556,12 +8556,12 @@ int app_bt_stream_open(APP_AUDIO_STATUS* status)
     case APP_BT_STREAM_HFP_PCM:
     case APP_BT_STREAM_HFP_CVSD:
     case APP_BT_STREAM_HFP_VENDOR:
-        nRet = bt_sco_player(true, freq);
+        nRet = bt_sco_player(true, freq);//通话
         break;
     case APP_BT_STREAM_A2DP_SBC:
     case APP_BT_STREAM_A2DP_AAC:
     case APP_BT_STREAM_A2DP_VENDOR:
-        nRet = bt_sbc_player(PLAYER_OPER_START, freq);
+        nRet = bt_sbc_player(PLAYER_OPER_START, freq);//播放音乐
         break;
 #ifdef __FACTORY_MODE_SUPPORT__
     case APP_FACTORYMODE_AUDIO_LOOP:
@@ -8571,7 +8571,7 @@ int app_bt_stream_open(APP_AUDIO_STATUS* status)
 #ifdef MEDIA_PLAYER_SUPPORT
     case APP_PLAY_BACK_AUDIO:
         TRACE_AUD_STREAM_I("<3>");
-        nRet = app_play_audio_onoff(true, status);
+        nRet = app_play_audio_onoff(true, status);//播放提示音
         break;
 #endif
 

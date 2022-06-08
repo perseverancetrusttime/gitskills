@@ -288,7 +288,7 @@ static bool gpadc_enabled = false;
 static bool adckey_enabled = false;
 static bool irq_enabled = false;
 static bool g_adcCalibrated = false;
-static HAL_GPADC_EVENT_CB_T gpadc_event_cb[HAL_GPADC_CHAN_QTY];
+static HAL_GPADC_EVENT_CB_T gpadc_event_cb[HAL_GPADC_CHAN_QTY];//函数指针
 static enum HAL_GPADC_ATP_T gpadc_atp[HAL_GPADC_CHAN_QTY];
 
 static enum HAL_GPADC_ATP_T hal_gpadc_get_min_atp(void)

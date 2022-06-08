@@ -1419,7 +1419,7 @@ uint32_t af_open(void)
 #ifdef RTOS
     if (audioflinger_mutex_id == NULL)
     {
-        audioflinger_mutex_id = osMutexCreate((osMutex(audioflinger_mutex)));
+        audioflinger_mutex_id = osMutexCreate((osMutex(audioflinger_mutex)));//创建互斥量
     }
 #endif
 
@@ -1473,7 +1473,7 @@ uint32_t af_open(void)
 #ifdef RTOS
     af_thread_tid = osThreadCreate(osThread(af_thread), NULL);
     af_default_priority = af_get_priority();
-    osSignalSet(af_thread_tid, 0x0);
+    osSignalSet(af_thread_tid, 0x0);//使用信号量进行线程同步
 #endif
 
     af_unlock_thread();

@@ -336,7 +336,7 @@ void xspace_battery_manager_timing_todo(void)
     dev_thread_ctrl_event_process(DEV_THREAD_CTRL_EVENT_FUNC_CALL, (void *)hal_bat_info_query_bat_info, 0, 0, 0);
 
 #if defined(__NTC_SUPPORT__)
-	xspace_battery_manager_high_temperature_shutdown();//add by chenjunjie 0310
+	xspace_battery_manager_high_temperature_shutdown();//added by chenjunjie 0310
 #endif
 }
 

@@ -37,7 +37,7 @@ typedef __int8		int8_t;
 typedef __int16		int16_t;
 typedef __int32		int32_t;
 typedef __int64		int64_t;
-#define inline __inline
+#define inline __inline//内联，直接复制该函数到调用的地方
 #define __inline__ __inline
 #define  INT16_MAX   0x7fff 
 #define  INT16_MIN   (-INT16_MAX - 1) 

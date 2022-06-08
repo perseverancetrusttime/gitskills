@@ -995,6 +995,18 @@ void media_runtime_audio_prompt_update(uint16_t id, uint8_t** ptr, uint32_t* len
             g_app_audio_data = (g_language==MEDIA_DEFAULT_LANGUAGE)?(U8*)EN_BT_SEALING_AUDIO: (U8*)EN_BT_SEALING_AUDIO;
             g_app_audio_length = (g_language==MEDIA_DEFAULT_LANGUAGE)?sizeof(EN_BT_SEALING_AUDIO): sizeof(EN_BT_SEALING_AUDIO);
             break;
+
+//jinyao_learning:播放welcome提示音
+
+#ifdef jinyao_learning
+        case AUDIO_ID_BT_WELCOME:
+            g_app_audio_data = (g_language==MEDIA_DEFAULT_LANGUAGE)?(U8*)EN_BT_WELCOME: (U8*)EN_BT_WELCOME;
+            g_app_audio_length = (g_language==MEDIA_DEFAULT_LANGUAGE)?sizeof(EN_BT_WELCOME): sizeof(EN_BT_WELCOME);
+            break;
+#endif
+
+
+
         default:
             g_app_audio_length = 0;
             break;
@@ -1756,8 +1768,7 @@ int app_play_audio_onoff(bool onoff, APP_AUDIO_STATUS* status)
 #if defined(__XSPACE_UI__)
         app_prompt_on_going_prompt_id2 = (AUD_ID_ENUM)aud_id;
 #endif
-        media_Play_init_audio(aud_id);
-#if defined(ANC_ASSIST_ENABLED)
+        media_Play_init_audio(aud_id);//配置音频文本文件
         if(aud_id == AUD_ID_ANC_PROMPT){         
             app_voice_assist_prompt_leak_detect_open();
             app_voice_assist_prompt_leak_detect_set_working_status(0);
@@ -2404,7 +2415,7 @@ static void app_prompt_handler_thread(void const *argument)
                 app_prompt_on_going_prompt_id = AUD_ID_INVALID;
                 app_prompt_stop_protector();
                 app_prompt_refresh_list();
-            }     
+            }
         }
     }
 }

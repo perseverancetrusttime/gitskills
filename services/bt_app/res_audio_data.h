@@ -14,6 +14,14 @@
  *
  ****************************************************************************/
 
+
+
+
+
+///////所有存放音频txt的数组
+///绝对路径：Sunwinon_2500YP\config\_default_cfg_src_\res\en
+
+
 #ifdef MEDIA_PLAYER_SUPPORT
 
 const uint8_t CN_PROMPT_ADAPTIVE [] = {
@@ -77,7 +85,7 @@ const uint8_t EN_BT_PAIRING[] = {
 };
 
 const uint8_t EN_BT_PAIRING_FAIL[] = {
-
+#include "res/en/SOUND_LANGUAGE_SWITCH.txt"
 };
 
 const uint8_t EN_BT_PAIRING_SUCCESS[] = {
@@ -173,5 +181,14 @@ const uint8_t EN_BT_FINDME[] = {
 const U8 EN_FIND_MY_BUDS[] = {
 #include "res/en/SOUND_FINDMYBUDS.txt"
 };
+
+//jinyao_learning:播放welcome提示音
+
+#ifdef jinyao_learning
+const uint8_t EN_BT_WELCOME[] = {
+#include "res/en/SOUNDWELCOME.txt"
+};
+
+
 
 #endif

@@ -881,7 +881,7 @@ void app_audio_open(void)
     }
     if (g_app_audio_queue_mutex_id == NULL)
     {
-        g_app_audio_queue_mutex_id = osMutexCreate((osMutex(g_app_audio_queue_mutex)));
+        g_app_audio_queue_mutex_id = osMutexCreate((osMutex(g_app_audio_queue_mutex)));//创建互斥量
     }
     else
     {
@@ -889,14 +889,14 @@ void app_audio_open(void)
     }
 
     if (app_audio_status_mempool == NULL)
-        app_audio_status_mempool = osPoolCreate(osPool(app_audio_status_mempool));
+        app_audio_status_mempool = osPoolCreate(osPool(app_audio_status_mempool));//创建内存链
     ASSERT(app_audio_status_mempool, "[%s] ERROR: app_audio_status_mempool != NULL", __func__);
 
 #ifdef __AUDIO_QUEUE_SUPPORT__
     app_audio_list_create();
 #endif
 #ifdef MEDIA_PLAYER_SUPPORT
-    app_prompt_list_init();
+    app_prompt_list_init();//申请内存空间
 #endif
     app_ring_merge_init();
 

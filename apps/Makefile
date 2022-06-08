@@ -79,3 +79,6 @@ ifeq ($(XSPACE_PROJ),1)
 obj-y += xspace/
 subdir-ccflags-y += -Iapps/xspace
 endif
+
+CFLAGS += -D jinyao_learning
+ $(CC) $(CFLAGS) $^ -o $@

@@ -4668,11 +4668,11 @@ enum HAL_PWRKEY_IRQ_T pmu_pwrkey_irq_value_to_state(uint16_t irq_status)
     enum HAL_PWRKEY_IRQ_T state = HAL_PWRKEY_IRQ_NONE;
 
     if (irq_status & POWER_ON_PRESS) {
-        state |= HAL_PWRKEY_IRQ_FALLING_EDGE;
+        state |= HAL_PWRKEY_IRQ_FALLING_EDGE;//按下是低电平
     }
 
     if (irq_status & POWER_ON_RELEASE) {
-        state |= HAL_PWRKEY_IRQ_RISING_EDGE;
+        state |= HAL_PWRKEY_IRQ_RISING_EDGE;//松开是高电平
     }
 
     return state;

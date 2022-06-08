@@ -36,13 +36,13 @@ typedef enum
 typedef enum
 {
     LANGUAGE_ID_INVALID = 0,
-    LANGUAGE_ID_EN      = 1,
-    LANGUAGE_ID_CN      = 2,
-    LANGUAGE_ID_GN      = 3,
-    LANGUAGE_ID_FN      = 4,
-    LANGUAGE_ID_KN      = 5,
-    LANGUAGE_ID_JN      = 6,
-    LANGUAGE_ID_RN      = 7,
+    LANGUAGE_ID_EN      = 1,//英语
+    LANGUAGE_ID_CN      = 2,//中文
+    LANGUAGE_ID_GN      = 3,//德语
+    LANGUAGE_ID_FN      = 4,//法语
+    LANGUAGE_ID_KN      = 5,//韩语
+    LANGUAGE_ID_JN      = 6,//日语
+    LANGUAGE_ID_RN      = 7,//俄语
 
     LANGUAGE_ID_NUM = 0xFF,
 } LANGUAGE_ID_E;

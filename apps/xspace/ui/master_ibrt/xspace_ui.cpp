@@ -540,13 +540,14 @@ static void xspace_ui_gesture_freeman_left_click_handler(void)
     static uint32_t last_enter_tick = 0;
 
     if (xspace_interface_get_current_ms() - last_enter_tick < 1000) {
-        return;
+        return;//防抖
     }
     last_enter_tick = xspace_interface_get_current_ms();
 
     XUI_TRACE(2, "I am freeman,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
+    //奇数次亮灯，偶数次灭灯
 }
 
 static void xspace_ui_gesture_freeman_right_click_handler(void)
@@ -675,6 +676,9 @@ static void xspace_ui_gesture_tws_left_click_handler(void)
     XUI_TRACE(2, "I am master,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
+
+    //jinyao_learning:左耳单击播放welcome提示音
+    app_voice_report(APP_STATUS_INDICATION_PROMPT_WELCOME,0);
 }
 
 static void xspace_ui_gesture_tws_right_click_handler(void)
@@ -689,6 +693,9 @@ static void xspace_ui_gesture_tws_right_click_handler(void)
     XUI_TRACE(2, "I am master,is_sco_mode:%d,%d.", xspace_interface_is_sco_mode(),
           btapp_hfp_get_call_active());
     // TODO(Mark)
+
+    //jinyao_learning:右耳单击播放welcome提示音
+    app_voice_report(APP_STATUS_INDICATION_PROMPT_WELCOME,0);
 }
 
 static void xspace_ui_gesture_tws_left_double_click_handler(void)
@@ -940,11 +947,11 @@ static void xspace_gesture_status_change_handle(xgm_event_type_e event_type, uin
 #endif
 
     if (!xspace_interface_tws_link_connected()) {
-        xspace_gesture_single_earphone_handle(event_type, data, len);
+        xspace_gesture_single_earphone_handle(event_type, data, len);//单耳
     } else if (xspace_interface_tws_is_master_mode() && xspace_interface_tws_link_connected()) {
-        xspace_gesture_tws_earphone_handle(true, event_type, data, len);
+        xspace_gesture_tws_earphone_handle(true, event_type, data, len);//主耳触发
     } else if (xspace_interface_tws_is_slave_mode() && xspace_interface_tws_link_connected()) {
-        xspace_ui_tws_send_info_sync_cmd(XUI_SYS_INFO_GESTURE_INFO_EVENT, &temp, 1);
+        xspace_ui_tws_send_info_sync_cmd(XUI_SYS_INFO_GESTURE_INFO_EVENT, &temp, 1);//从耳触发
     }
 }
 
@@ -1184,6 +1191,7 @@ static void xspace_ui_inear_status_changed_process(void)
     static uint8_t last_peer_inear_status = 0xff;
     static uint8_t wear_off_check_cnt = 0;
     static uint8_t play_status_order = 0;
+    static uint8_t touch_status_order = 0;//是否可沿用沿用音频流的入耳检测？？？
 #if defined(__SMART_INEAR_MUSIC_REPLAY__)
     static uint8_t wear_on_check_cnt = 0;
     static uint8_t last_wear_auto_play = 0xff;
@@ -1287,29 +1295,32 @@ static void xspace_ui_inear_status_changed_process(void)
             if (XUI_INEAR_ON == xui_tws_ctx.local_sys_info.inear_status
                 && 0xff == last_local_inear_status
                 && XUI_INEAR_OFF == xui_tws_ctx.peer_sys_info.inear_status
-                && 0xff == last_peer_inear_status) {
+                && 0xff == last_peer_inear_status) {    //本耳入耳了，对耳未入耳
                 if (xspace_interface_is_a2dp_mode()) {
                     test_flag = 1;
-                    play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
+                    play_status_order = BTIF_AVRCP_MEDIA_PAUSED;    //这里应该是双耳模式
                 }
+                touch_status_order=BTIF_AVRCP_MEDIA_PLAYING;
             } else if (XUI_INEAR_OFF == xui_tws_ctx.local_sys_info.inear_status
                        && 0xff == last_local_inear_status
                        && XUI_INEAR_ON == xui_tws_ctx.peer_sys_info.inear_status
                        && 0xff == last_peer_inear_status) {
                 if (xspace_interface_is_a2dp_mode()) {
                     test_flag = 2;
-                    play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
+                    play_status_order = BTIF_AVRCP_MEDIA_PAUSED;    //同上
                 }
+                touch_status_order=BTIF_AVRCP_MEDIA_PLAYING;
             } else if ((XUI_INEAR_ON == xui_tws_ctx.local_sys_info.inear_status
                         && XUI_INEAR_ON != last_local_inear_status)
                        || (XUI_INEAR_ON == xui_tws_ctx.peer_sys_info.inear_status
                            && XUI_INEAR_ON != last_peer_inear_status)) {
                 test_flag = 3;
-                play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                play_status_order = BTIF_AVRCP_MEDIA_PLAYING;   //双耳均保持入耳，可继续播放
+                touch_status_order=BTIF_AVRCP_MEDIA_PLAYING;
             } else if (XUI_INEAR_ON == xui_tws_ctx.local_sys_info.inear_status
                        && XUI_INEAR_ON == last_local_inear_status
                        && XUI_INEAR_OFF == xui_tws_ctx.peer_sys_info.inear_status
-                       && XUI_INEAR_UNKNOWN == last_peer_inear_status) {
+                       && XUI_INEAR_UNKNOWN == last_peer_inear_status) {//对耳是否入耳未知
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 4;
                     play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
@@ -1317,30 +1328,32 @@ static void xspace_ui_inear_status_changed_process(void)
                     test_flag = 5;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
                 }
+                touch_status_order=BTIF_AVRCP_MEDIA_PLAYING;
             } else if ((XUI_INEAR_OFF == xui_tws_ctx.local_sys_info.inear_status
                         && XUI_INEAR_ON == last_local_inear_status)
                        || (XUI_INEAR_OFF == xui_tws_ctx.peer_sys_info.inear_status
                            && XUI_INEAR_ON == last_peer_inear_status)) {
                 test_flag = 6;
-                play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
+                play_status_order = BTIF_AVRCP_MEDIA_PAUSED;//双耳均明确已摘出
             } else if ((XUI_INEAR_ON == xui_tws_ctx.local_sys_info.inear_status
                         && XUI_INEAR_ON == last_local_inear_status)
                        && (XUI_INEAR_UNKNOWN == xui_tws_ctx.peer_sys_info.inear_status
                            && XUI_INEAR_OFF == last_peer_inear_status)) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 7;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//如果已经建立音频流，则本耳继续播放
                 } else {
                     test_flag = 8;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
                 }
+                touch_status_order=BTIF_AVRCP_MEDIA_PLAYING;
             } else if ((XUI_INEAR_OFF == xui_tws_ctx.local_sys_info.inear_status
                         && XUI_INEAR_OFF == last_local_inear_status)
                        && (XUI_INEAR_UNKNOWN == xui_tws_ctx.peer_sys_info.inear_status
                            && XUI_INEAR_UNKNOWN == last_peer_inear_status)) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 9;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//如果有音频流，则保持原音频流的播放
                 } else {
                     test_flag = 10;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
@@ -1351,7 +1364,7 @@ static void xspace_ui_inear_status_changed_process(void)
                            && XUI_INEAR_UNKNOWN == last_peer_inear_status)) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 11;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//同上
                 } else {
                     test_flag = 12;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
@@ -1362,7 +1375,7 @@ static void xspace_ui_inear_status_changed_process(void)
                            && XUI_INEAR_UNKNOWN == last_peer_inear_status)) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 13;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//同上
                 } else {
                     test_flag = 14;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
@@ -1373,7 +1386,7 @@ static void xspace_ui_inear_status_changed_process(void)
                            && XUI_INEAR_OFF == last_peer_inear_status)) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 15;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//同上
                 } else {
                     test_flag = 16;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
@@ -1384,7 +1397,7 @@ static void xspace_ui_inear_status_changed_process(void)
                            && XUI_INEAR_OFF == last_peer_inear_status)) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 17;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//同上
                 } else {
                     test_flag = 18;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
@@ -1395,7 +1408,7 @@ static void xspace_ui_inear_status_changed_process(void)
                        && XUI_INEAR_UNKNOWN == last_peer_inear_status) {
                 if (xspace_interface_is_a2dp_mode() && a2dp_mute_flag == 0) {
                     test_flag = 19;
-                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;
+                    play_status_order = BTIF_AVRCP_MEDIA_PLAYING;//若音频流存在则保持原音频流的播放
                 } else {
                     test_flag = 20;
                     play_status_order = BTIF_AVRCP_MEDIA_PAUSED;
@@ -1670,7 +1683,7 @@ void xspace_ui_inear_detect_manager_status_change(inear_detect_manager_status_e 
     if (INEAR_DETECT_MG_DETACH_EAR == inear_status) {
         XUI_TRACE(0, " EAR_Detech");
 #if defined(__XSPACE_GESTURE_MANAGER__)
-        xspace_gesture_manage_enter_standby_mode();
+        xspace_gesture_manage_enter_standby_mode();//待机、低功耗模式
 #endif
         xui_tws_ctx.local_sys_info.inear_status = XUI_INEAR_OFF;
         ibrt_event = IBRT_MGR_EV_WEAR_DOWN;
@@ -2477,7 +2490,7 @@ void xspace_ui_tws_recieve_volume_info(uint8_t *info, uint8_t len)
     }
 }
 
-void xspace_ui_tws_info_sync_recived_handle(uint16_t rsp_seq, uint8_t *data, uint16_t len)
+void xspace_ui_tws_info_sync_recived_handle(uint16_t rsp_seq, uint8_t *data, uint16_t len)//从耳触发
 {
     xui_tws_sync_info_s tws_sync_info_tx;
     xui_tws_sync_info_s tws_sync_info_rx;

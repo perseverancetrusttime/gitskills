@@ -1627,8 +1627,8 @@ static void gh61x_loogkey5s_timer_stop(void)
 
 void gh61x_int_handler_deal(void)
 {
-    uint32_t curr_ticks_gh61x = hal_sys_timer_get();
-    uint32_t diff_ticks_vbus = hal_timer_get_passed_ticks(curr_ticks_gh61x, prev_ticks_gh61x);
+    uint32_t curr_ticks_gh61x = hal_sys_timer_get();//目前时间
+    uint32_t diff_ticks_vbus = hal_timer_get_passed_ticks(curr_ticks_gh61x, prev_ticks_gh61x);//所花时长
     POSSIBLY_UNUSED uint16_t Irq_status = 0;
     GH61X_TRACE(2, "%s duration %d ms", __func__, TICKS_TO_MS(diff_ticks_vbus));
 
@@ -1643,7 +1643,7 @@ void gh61x_int_handler_deal(void)
         if (diff_ticks_vbus > MS_TO_TICKS(300))
 #endif
         {
-            touchkey_status = TK_NO_OPERA;
+            touchkey_status = TK_NO_OPERA;//没有触摸
         }
         prev_ticks_gh61x = curr_ticks_gh61x;
 
@@ -1673,7 +1673,7 @@ void gh61x_int_handler_deal(void)
 #endif
             if (GH61X_HasWearingOrTkEventDetected()) {
                 GH61X_EXAMPLE_LOG("gh61x wearingOrTk event detected!!!");
-                switch (GH61X_GetWearingStatus()) {
+                switch (GH61X_GetWearinggStatus()) {
                     GH61X_EXAMPLE_LOG("gh61x wearing status: %d.", GH61X_GetWearingStatus());
                     case WD_STATUS_UNKNOWN:
                         if (wear_status != WD_STATUS_UNKNOWN) {
@@ -1687,6 +1687,7 @@ void gh61x_int_handler_deal(void)
                             wear_status = WD_STATUS_WEARING;
                             GH61X_TRACE(0, "WD_STATUS_WEARING");
                             //user code for wearing status
+                            //添加触摸模块的调用函数（可以在这里触摸模式检测）
                             gh61x_adapter_report_inear_status(true);
                         }
                         break;
@@ -1720,6 +1721,8 @@ void gh61x_int_handler_deal(void)
                         }
                         GH61X_TRACE(0, "TK_SINGLE_CLICK");
                         gh61x_adapter_report_gesture_event(HAL_TOUCH_EVENT_CLICK);
+
+                        //添加xspace_gesture_single_earphone_handle()
                         break;
 
                     case TK_DOUBLE_CLICK:

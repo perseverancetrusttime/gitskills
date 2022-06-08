@@ -52,7 +52,7 @@ extern "C" bool app_usbaudio_mode_on(void);
 #endif
 
 #ifndef APP_BATTERY_PD_MV
-#define APP_BATTERY_PD_MV   (3100)
+#define APP_BATTERY_PD_MV   (3100)//powerdown?
 #endif
 
 #ifndef APP_BATTERY_CHARGE_TIMEOUT_MIN
@@ -89,7 +89,7 @@ extern "C" bool app_usbaudio_mode_on(void);
 
 #define APP_BATTERY_REPORT_INTERVAL (5)
 
-#define APP_BATTERY_MV_BASE ((APP_BATTERY_MAX_MV-APP_BATTERY_PD_MV)/(APP_BATTERY_LEVEL_NUM))
+#define APP_BATTERY_MV_BASE ((APP_BATTERY_MAX_MV-APP_BATTERY_PD_MV)/(APP_BATTERY_LEVEL_NUM))//4200-3100=1100,base=110
 
 #define APP_BATTERY_STABLE_COUNT (5)
 #define APP_BATTERY_MEASURE_PERIODIC_FAST_MS (200)
@@ -146,10 +146,10 @@ struct APP_BATTERY_MEASURE_T
     uint16_t index;
     struct APP_BATTERY_MEASURE_CHARGER_STATUS_T charger_status;
     APP_BATTERY_EVENT_CB_T cb;//函数指针
-    APP_BATTERY_CB_T user_cb;
+    APP_BATTERY_CB_T user_cb;//函数指针
 };
 
-#ifdef IS_BES_BATTERY_MANAGER_ENABLED
+#ifdef IS_BES_BATTERY_MANAGER_ENABLED/////////////////////////////////////////////////////////////////////////////
 
 static enum APP_BATTERY_CHARGER_T app_battery_charger_forcegetstatus(void);
 
@@ -161,7 +161,7 @@ static uint32_t app_battery_pluginout_debounce_ctx = 0;
 static uint32_t app_battery_pluginout_debounce_cnt = 0;
 
 static void app_battery_timer_handler(void const *param);
-osTimerDef (APP_BATTERY, app_battery_timer_handler);
+osTimerDef (APP_BATTERY, app_battery_timer_handler);         //定义定时器名称和定时器回调函数
 static osTimerId app_battery_timer = NULL;
 static struct APP_BATTERY_MEASURE_T app_battery_measure;
 
@@ -223,7 +223,7 @@ void app_battery_irqhandler(uint16_t irq_val, HAL_GPADC_MV_T volt)
     {
         int8_t level = 0;
         meanBattVolt = vbat<<2;
-        level = (meanBattVolt-APP_BATTERY_PD_MV)/APP_BATTERY_MV_BASE;
+        level = (meanBattVolt-APP_BATTERY_PD_MV)/APP_BATTERY_MV_BASE;//(-3100)/110
 
         if (level<APP_BATTERY_LEVEL_MIN)
             level = APP_BATTERY_LEVEL_MIN;
@@ -264,7 +264,7 @@ static void app_battery_timer_start(enum APP_BATTERY_MEASURE_PERIODIC_T periodic
     }
 }
 
-static void app_battery_timer_handler(void const *param)
+static void app_battery_timer_handler (void const *param)
 {
     hal_gpadc_open(HAL_GPADC_CHAN_BATTERY, HAL_GPADC_ATP_ONESHOT, app_battery_irqhandler);
 }
@@ -276,7 +276,7 @@ static void app_battery_event_process(enum APP_BATTERY_STATUS_T status, APP_BATT
 
     APP_BATTERY_TRACE(3,"%s %d,%d",__func__, status, volt);
     msg.mod_id = APP_MODUAL_BATTERY;
-    APP_BATTERY_SET_MESSAGE(app_battevt, status, volt);
+    APP_BATTERY_SET_MESSAGE(app_battevt, status, volt);//电量计算,结果放到app_battevt里面
     msg.msg_body.message_id = app_battevt;
     msg.msg_body.message_ptr = (uint32_t)NULL;
     app_mailbox_put(&msg);
@@ -292,14 +292,14 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
         case APP_BATTERY_STATUS_UNDERVOLT:
             TRACE(1,"UNDERVOLT:%d", prams.volt);
             app_status_indication_set(APP_STATUS_INDICATION_CHARGENEED);
-#ifdef MEDIA_PLAYER_SUPPORT
-#if defined(IBRT)
+            #ifdef MEDIA_PLAYER_SUPPORT//语音提醒
+                #if defined(IBRT)
 
-#else
-            app_voice_report(APP_STATUS_INDICATION_CHARGENEED, 0);
-#endif
-#endif
-            // FALLTHROUGH
+                #else
+                            app_voice_report(APP_STATUS_INDICATION_CHARGENEED, 0);
+                #endif
+            #endif
+                        // FALLTHROUGH
         case APP_BATTERY_STATUS_NORMAL:
         case APP_BATTERY_STATUS_OVERVOLT:
             app_battery_measure.currvolt = prams.volt;
@@ -309,46 +309,46 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
                 level = APP_BATTERY_LEVEL_MIN;
             if (level>APP_BATTERY_LEVEL_MAX)
                 level = APP_BATTERY_LEVEL_MAX;
-#ifdef __INTERCONNECTION__
-            APP_BATTERY_INFO_T* pBatteryInfo;
-            pBatteryInfo = (APP_BATTERY_INFO_T*)&app_battery_measure.currentBatteryInfo;
-            pBatteryInfo->batteryLevel = level;
-            if(level == APP_BATTERY_LEVEL_MAX)
-            {
-                level = 9;
-            }
-            else
-            {
-                level /= 10;
-            }
-#else
-            app_battery_measure.currlevel = level;
-#endif
-            app_status_battery_report(level);
+                #ifdef __INTERCONNECTION__
+                            APP_BATTERY_INFO_T* pBatteryInfo;
+                            pBatteryInfo = (APP_BATTERY_INFO_T*)&app_battery_measure.currentBatteryInfo;
+                            pBatteryInfo->batteryLevel = level;
+                            if(level == APP_BATTERY_LEVEL_MAX)
+                            {
+                                level = 9;
+                            }
+                            else
+                            {
+                                level /= 10;
+                            }
+                #else
+                            app_battery_measure.currlevel = level;
+                #endif
+            app_status_battery_report(level);//汇报电池电量
             break;
         case APP_BATTERY_STATUS_PDVOLT:
-#ifndef BT_USB_AUDIO_DUAL_MODE
-            TRACE(1,"PDVOLT-->POWEROFF:%d", prams.volt);
-            osTimerStop(app_battery_timer);
-            app_shutdown();
-#endif
-            break;
+            #ifndef BT_USB_AUDIO_DUAL_MODE
+                        TRACE(1,"PDVOLT-->POWEROFF:%d", prams.volt);
+                        osTimerStop(app_battery_timer);
+                        app_shutdown();//关机
+            #endif
+                        break;
         case APP_BATTERY_STATUS_CHARGING:
             TRACE(1,"CHARGING-->APP_BATTERY_CHARGER :%d", prams.charger);
             if (prams.charger == APP_BATTERY_CHARGER_PLUGIN)
             {
-#ifdef BT_USB_AUDIO_DUAL_MODE
-                TRACE(1,"%s:PLUGIN.", __func__);
-                btusb_switch(BTUSB_MODE_USB);
-#else
-#if CHARGER_PLUGINOUT_RESET
-                app_reset();
-#else
-                app_battery_measure.status = APP_BATTERY_STATUS_CHARGING;
-#endif
-#endif
-            }
-            break;
+            #ifdef BT_USB_AUDIO_DUAL_MODE
+                            TRACE(1,"%s:PLUGIN.", __func__);
+                            btusb_switch(BTUSB_MODE_USB);
+            #else
+            #if CHARGER_PLUGINOUT_RESET
+                            app_reset();
+            #else
+                            app_battery_measure.status = APP_BATTERY_STATUS_CHARGING;
+            #endif
+            #endif
+                        }
+                        break;
         case APP_BATTERY_STATUS_INVALID:
         default:
             break;
@@ -419,7 +419,7 @@ int app_battery_handle_process_charging(uint32_t status,  union APP_BATTERY_MSG_
 static int app_battery_handle_process(APP_MESSAGE_BODY *msg_body)
 {
     uint8_t status;
-    union APP_BATTERY_MSG_PRAMS msg_prams;
+    union APP_BATTERY_MSG_PRAMS msg_prams;                                      //pram是一个多数据流多指令流并行的有共享存储器的模型，它有多个功能相同的处理器？？
 
     APP_BATTERY_GET_STATUS(msg_body->message_id, status);
     APP_BATTERY_GET_PRAMS(msg_body->message_id, msg_prams.prams);
@@ -902,7 +902,7 @@ int ntc_capture_start(void)
     hal_gpadc_open(HAL_GPADC_CHAN_0, HAL_GPADC_ATP_ONESHOT, ntc_capture_irqhandler);
     return 0;
 }
-#else
+#else//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define IS_USE_SOC_PMU_PLUGINOUT
 
@@ -929,8 +929,8 @@ static int app_battery_handle_process(APP_MESSAGE_BODY *msg_body)
 
     APP_BATTERY_GET_STATUS(msg_body->message_id, status);
 
-    if (status == APP_BATTERY_STATUS_PLUGINOUT){
-        app_battery_pluginout_debounce_start();
+    if (status == APP_BATTERY_STATUS_PLUGINOUT){//正在进行充电线插入拔出操作
+        app_battery_pluginout_debounce_start();//去抖动
     }
 
     return 0;

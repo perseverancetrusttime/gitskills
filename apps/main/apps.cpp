@@ -535,7 +535,7 @@ static void app_10_second_event_process(void)
 
 static void app_10second_timer_timeout_handler(void const *param)
 {
-    app_10_second_event_process();
+    app_10_second_event_process();//时间到，清零
 }
 
 static void app_10second_timer_init(void)
@@ -555,7 +555,7 @@ int app_status_battery_report(uint8_t level)
 #if defined(__BTIF_EARPHONE__)
     app_10_second_timer_check();
 #endif
-    if (level <= APP_BATTERY_LEVEL_LOWPOWERTHRESHOLD)
+    if (level <= APP_BATTERY_LEVEL_LOWPOWERTHRESHOLD)//低于低电量最低限度
     {
         //add something
     }
@@ -742,6 +742,13 @@ int app_voice_report_handler(APP_STATUS_INDICATION_T status, uint8_t device_id, 
             case APP_STATUS_INDICATION_GSOUND_NC:
                 id = AUDIO_ID_BT_GSOUND_NC;
                 break;
+
+#ifdef jinyao_learning
+            case APP_STATUS_INDICATION_PROMPT_WELCOME:
+                id = AUDIO_ID_BT_WELCOME;
+                break;
+#endif
+
 #ifdef __BT_WARNING_TONE_MERGE_INTO_STREAM_SBC__
             case APP_STATUS_RING_WARNING:
                 id = AUD_ID_RING_WARNING;
@@ -803,17 +810,17 @@ int app_voice_report_handler(APP_STATUS_INDICATION_T status, uint8_t device_id, 
 
     if(isLocalPlay)
     {
-        media_PlayAudio_locally(id, device_id);
+        media_PlayAudio_locally(id, device_id);//本地播放
     }
 #ifndef AUDIO_PROMPT_USE_DAC2_ENABLED
     else if (isMerging)
     {
-        media_PlayAudio(id, device_id);
+        media_PlayAudio(id, device_id);//混合播放
     }
 #endif
     else
     {
-        media_PlayAudio_standalone(id, device_id);
+        media_PlayAudio_standalone(id, device_id);//打断播放
     }
     return 0;
 }
@@ -1508,7 +1515,7 @@ void app_bt_streaming_hold_frequency_run_timer_start(uint8_t ratio)
         TRACE(1, "hold frequency to %d", freq);
         app_sysfreq_req(hold_frequency_user, hold_frequency);
 
-        osTimerStart(bt_stream_frequency_hold_timer_id, HOLD_FREQUENCY_TIMER_DELAY_TIME_MS);
+        osTimerStart(bt_stream_frequency_hold_timer_id, HOLD_FREQUENCY_TIMER_DELAY_TIME_MS);//1s
     }else{
         TRACE(1,"%s bt_stream_frequency_hold_timer_id == NULL",__func__);
     }
@@ -1632,7 +1639,7 @@ int app_init(void)
 
     app_sysfreq_req(APP_SYSFREQ_USER_APP_INIT, APP_SYSFREQ_52M);
     list_init();
-    af_open();
+    af_open();//承上启下，向上提供接口，向下访问硬件
     app_os_init();
     app_pwl_open();
     app_audio_open();

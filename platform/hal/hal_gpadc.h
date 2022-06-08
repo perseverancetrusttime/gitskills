@@ -31,7 +31,7 @@ enum HAL_GPADC_CHAN_T {
     HAL_GPADC_CHAN_5 = 5,
     HAL_GPADC_CHAN_6 = 6,
     HAL_GPADC_CHAN_ADCKEY = 7,
-    HAL_GPADC_CHAN_QTY,
+    HAL_GPADC_CHAN_QTY,//一共八个通道
 };
 
 enum HAL_GPADC_ATP_T {

@@ -151,7 +151,7 @@ static uint32_t time_first_debounce;
 static void hal_key_disable_allint(void);
 static void hal_key_enable_allint(void);
 
-static int send_key_event(enum HAL_KEY_CODE_T code, enum HAL_KEY_EVENT_T event)
+static int send_key_event(enum HAL_KEY_CODE_T code, enum HAL_KEY_EVENT_T event)//那一个按键、按键发生了什么事：按下还是抬起？长按还是短按？等等
 {
     if (key_detected_callback) {
         return key_detected_callback(code, event);
@@ -441,7 +441,7 @@ static void hal_pwrkey_open(void)
 #ifdef CHIP_HAS_EXT_PMU
     pmu_set_irq_unified_handler(PMU_IRQ_TYPE_PWRKEY, hal_pwrkey_irqhandler);
 #else
-    NVIC_SetVector(PWRKEY_IRQn, (uint32_t)hal_pwrkey_irqhandler);
+    NVIC_SetVector(PWRKEY_IRQn, (uint32_t)hal_pwrkey_irqhandler);//NVIC嵌套向量中断控制器，vector向量
     NVIC_SetPriority(PWRKEY_IRQn, IRQ_PRIORITY_NORMAL);
     NVIC_ClearPendingIRQ(PWRKEY_IRQn);
     NVIC_EnableIRQ(PWRKEY_IRQn);
@@ -515,7 +515,7 @@ static void hal_gpiokey_irqhandler(enum HAL_GPIO_PIN_T pin)
         gpio_key.pin_debounce |= ((GPIO_MAP_T)1 << pin);
         gpio_key.time_debounce = time;
     } else {
-        gpio_key.pin_dither |= ((GPIO_MAP_T)1 << pin);
+        gpio_key.pin_dither |= ((GPIO_MAP_T)1 << pin);//dither抖动
         gpio_key.time_dither = time;
     }
     int_unlock(lock);
@@ -561,12 +561,12 @@ static inline void hal_gpiokey_enable_allint(void)
             continue;
         }
 
-        if (cfg_hw_gpio_key_cfg[i].key_down == HAL_KEY_GPIOKEY_VAL_LOW) {
+        if (cfg_hw_gpio_key_cfg[i].key_down == HAL_KEY_GPIOKEY_VAL_LOW) {//现在是低电平，在完成事件之后又会变低，故用FALLING 
             polarity = HAL_GPIO_IRQ_POLARITY_LOW_FALLING;
         } else {
             polarity = HAL_GPIO_IRQ_POLARITY_HIGH_RISING;
         }
-        hal_gpiokey_enable_irq((enum HAL_GPIO_PIN_T)cfg_hw_gpio_key_cfg[i].key_config.pin, polarity);
+        hal_gpiokey_enable_irq((enum HAL_GPIO_PIN_T)cfg_hw_gpio_key_cfg[i].key_config.pin, polarity);//中断引脚注册
     }
 }
 
@@ -699,7 +699,7 @@ static void hal_key_debounce_handler(void *param)
                 if (time - pwr_key.time >= KEY_DEBOUNCE_INTERVAL) {
                     pwr_key.debounce = false;
                     pwr_key.dither = false;
-                    code_down |= HAL_KEY_CODE_PWR;
+                    code_down |= HAL_KEY_CODE_PWR;//=1
                 }
             } else {
                 pwr_key.debounce = false;
@@ -881,7 +881,7 @@ static void hal_key_debounce_handler(void *param)
                 index = hal_gpiokey_find_index(gpio);
                 if (hal_gpio_pin_get_val(gpio) == cfg_hw_gpio_key_cfg[index].key_down) {
                     if (time - gpio_key.time_debounce >= KEY_DEBOUNCE_INTERVAL) {
-                        down_added |= ((GPIO_MAP_T)1 << gpio);
+                        down_added |= ((GPIO_MAP_T)1 << gpio);//加起来
                         code_down |= cfg_hw_gpio_key_cfg[index].key_code;
                         gpio_key.pin_down |= ((GPIO_MAP_T)1 << gpio);
                     }
@@ -917,9 +917,9 @@ static void hal_key_debounce_handler(void *param)
     while (map) {
         if (map & (1 << index)) {
             map &= ~(1 << index);
-            send_key_event((1 << index), HAL_KEY_EVENT_UP);
+            send_key_event((1 << index), HAL_KEY_EVENT_UP);//抬起的按键动作
             if (key_status.event == HAL_KEY_EVENT_LONGPRESS || key_status.event == HAL_KEY_EVENT_LONGLONGPRESS) {
-                send_key_event((1 << index), HAL_KEY_EVENT_UP_AFTER_LONGPRESS);
+                send_key_event((1 << index), HAL_KEY_EVENT_UP_AFTER_LONGPRESS);//长按之后的抬起
             }
             key_status.time_updown = time;
         }
@@ -1141,7 +1141,7 @@ int hal_key_open(int checkPwrKey, int (* cb)(uint32_t, uint8_t))
     lock = int_lock();
 
 #ifdef CHECK_PWRKEY_AT_BOOT
-    if (checkPwrKey) {
+    if (checkPwrKey) {//pwrkey：power key启动使能按键
         int cnt;
         int i = 0;
 
@@ -1158,7 +1158,7 @@ int hal_key_open(int checkPwrKey, int (* cb)(uint32_t, uint8_t))
 #endif
 
 #ifndef NO_PWRKEY
-    hal_pwrkey_open();
+    hal_pwrkey_open();//power key 
 #endif
 #if (CFG_HW_ADCKEY_NUMBER > 0)
     hal_adckey_open();

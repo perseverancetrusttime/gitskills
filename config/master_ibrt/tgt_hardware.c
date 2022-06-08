@@ -1983,7 +1983,7 @@ int tgt_hardware_setup(void)
     hal_iomux_init((struct HAL_IOMUX_PIN_FUNCTION_MAP *)&app_tws_ear_side_cfg, 1);
     hal_gpio_pin_set_dir((enum HAL_GPIO_PIN_T)app_tws_ear_side_cfg.pin, HAL_GPIO_DIR_IN, 1);
 
-    /**shipmode pin*/
+    /**shipmode pin*///运输产品过程的电量模式
     hal_iomux_init((struct HAL_IOMUX_PIN_FUNCTION_MAP *)&app_ear_shipmode_cfg, 1);
     hal_gpio_pin_set_dir((enum HAL_GPIO_PIN_T)app_ear_shipmode_cfg.pin, HAL_GPIO_DIR_OUT, 0);
 	hal_gpio_pin_clr((enum HAL_GPIO_PIN_T)app_txon_ctrl_cfg.pin);

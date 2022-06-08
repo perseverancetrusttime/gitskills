@@ -4021,7 +4021,7 @@ void app_bt_disconnect_link_byaddr(bt_bdaddr_t * remote)
 void app_bt_init(void)
 {
     app_bt_mail_init();
-    app_set_threadhandle(APP_MODUAL_BT, app_bt_handle_process);
+    app_set_threadhandle(APP_MODUAL_BT, app_bt_handle_process);//调用app_thread来回调调用app_bt_handle_process进行相关的蓝牙处理
     app_bt_active_mode_manager_init();
 
 #if defined(__CONNECTIVITY_LOG_REPORT__)

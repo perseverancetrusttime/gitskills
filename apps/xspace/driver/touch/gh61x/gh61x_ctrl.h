@@ -62,8 +62,8 @@ typedef enum
 
     TK_SLIDE_LEFT = 12,
     TK_SLIDE_RIGHT = 13,
-    TK_SLIDE_CLOCK = 14,
-    TK_SLIDE_ANTICLOCK = 15,	
+    TK_SLIDE_CLOCK = 14,//顺时针
+    TK_SLIDE_ANTICLOCK = 15,	//逆时针
 } EM_TK_STATUS_TYPE;
 #endif
 

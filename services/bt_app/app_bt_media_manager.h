@@ -26,9 +26,9 @@ extern "C" {
 #define  BT_STREAM_DIRECTION_IN     1
 
 // direction is out
-#define  BT_STREAM_SBC          0x1
-#define  BT_STREAM_MEDIA        0x2
-#define  BT_STREAM_VOICE        0x4
+#define  BT_STREAM_SBC          0x1//音乐
+#define  BT_STREAM_MEDIA        0x2//提示音
+#define  BT_STREAM_VOICE        0x4//电话
 #ifdef AUDIO_LINEIN
 #define  BT_STREAM_LINEIN       0x8
 #endif

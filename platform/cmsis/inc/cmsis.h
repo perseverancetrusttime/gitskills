@@ -105,7 +105,7 @@ __STATIC_FORCEINLINE uint32_t int_lock(void)
     irq_masked_addr.lr = (uint32_t)__builtin_return_address(0);
     // Only allow IRQs with priority IRQ_PRIORITY_HIGHPLUSPLUS and IRQ_PRIORITY_REALTIME
     __set_BASEPRI(((IRQ_PRIORITY_HIGHPLUS << (8 - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL));
-    return pri;
+    return pri;//PRI基群速率接口（Primary Rate Interface）?
 #endif
 #else
     return int_lock_global();

@@ -541,7 +541,7 @@ void  bt_media_start(uint16_t stream_type, enum BT_DEVICE_ID_T device_id, uint16
             break;
 #endif
 
-        case BT_STREAM_SBC:
+        case BT_STREAM_SBC://音乐流
         {
             uint8_t media_pre_sbc = bt_meida.media_curr_sbc;
 
@@ -643,7 +643,7 @@ void  bt_media_start(uint16_t stream_type, enum BT_DEVICE_ID_T device_id, uint16
         break;
 
 #ifdef MEDIA_PLAYER_SUPPORT
-        case BT_STREAM_MEDIA:
+        case BT_STREAM_MEDIA://提示音流
 #ifdef MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED
             isMergingPrompt = IS_PROMPT_NEED_MERGING(media_id);
 #endif
@@ -1698,7 +1698,7 @@ int app_audio_manager_ctrl_volume_handle(APP_MESSAGE_BODY *msg_body)
             app_bt_stream_volume_edge_check();
             break;
         case APP_AUDIO_MANAGER_VOLUME_CTRL_UP:
-            local_volume_changed_device_id = app_bt_stream_local_volumeup();
+            local_volume_changed_device_id = app_bt_stream_local_volumeup();//作为改变音量的标志：local_volume_changed_device_id
             btapp_hfp_report_speak_gain();
             btapp_a2dp_report_speak_gain();
             break;
@@ -1866,21 +1866,17 @@ int app_audio_manager_tune_samplerate_ratio(enum AUD_STREAM_T stream, float rati
 static int app_audio_manager_handle_process(APP_MESSAGE_BODY *msg_body)
 {
     int nRet = 0;
-
     APP_AUDIO_MANAGER_MSG_STRUCT aud_manager_msg;
     APP_AUDIO_MANAGER_CALLBACK_T callback_fn = NULL;
     uint32_t callback_param = 0;
-
     if(app_audio_manager_init == false)
         return -1;
-
     APP_AUDIO_MANAGER_GET_ID(msg_body->message_id, aud_manager_msg.id);
     APP_AUDIO_MANAGER_GET_STREAM_TYPE(msg_body->message_id, aud_manager_msg.stream_type);
     APP_AUDIO_MANAGER_GET_DEVICE_ID(msg_body->message_Param0, aud_manager_msg.device_id);
     APP_AUDIO_MANAGER_GET_AUD_ID(msg_body->message_Param0, aud_manager_msg.aud_id);
     APP_AUDIO_MANAGER_GET_CALLBACK(msg_body->message_Param1, callback_fn);
     APP_AUDIO_MANAGER_GET_CALLBACK_PARAM(msg_body->message_Param2, callback_param);
-
     TRACE(7, "%s %d%s %x%s d%x aud %x", __func__,
           aud_manager_msg.id, handleId2str(aud_manager_msg.id),
           aud_manager_msg.stream_type, aud_manager_msg.stream_type ? strmtype2str(aud_manager_msg.stream_type) : "[N/A]",

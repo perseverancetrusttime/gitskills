@@ -236,13 +236,13 @@ typedef enum {
 } osStatus;
 #else
 typedef int32_t                  osStatus;
-#define osEventSignal           (0x08)
-#define osEventMessage          (0x10)
-#define osEventMail             (0x20)
-#define osEventTimeout          (0x40)
+#define osEventSignal           (0x08)//信号量有关事件的状态
+#define osEventMessage          (0x10)//消息队列有关事件的状态
+#define osEventMail             (0x20)//邮箱队列有关事件的状态
+#define osEventTimeout          (0x40)//超时
 #define osErrorOS               osError
 #define osErrorTimeoutResource  osErrorTimeout
-#define osErrorISRRecursive     (-126)
+#define osErrorISRRecursive     (-126)//中断递归错误
 #define osErrorValue            (-127)
 #define osErrorPriority         (-128)
 #define os_status_reserved        (0x7FFFFFFF)  ///< Prevents enum down-size compiler optimization.

@@ -65,12 +65,12 @@ void app_key_simulate_key_event(uint32_t key_code, uint8_t key_event)
     key_event_process(key_code, key_event);
 }
 
-static void app_key_handle_free(void *key_handle)
+static void app_key_handle_free(void *key_handle)//释放空间
 {
     osPoolFree (app_key_handle_mempool, key_handle);
 }
 
-static APP_KEY_HANDLE *app_key_handle_find(const APP_KEY_STATUS *key_status)
+static APP_KEY_HANDLE *app_key_handle_find(const APP_KEY_STATUS *key_status)//根据按键的号码和按键的事件找句柄
 {
     APP_KEY_HANDLE *key_handle = NULL;
     list_node_t *node = NULL;
@@ -84,8 +84,8 @@ static APP_KEY_HANDLE *app_key_handle_find(const APP_KEY_STATUS *key_status)
     return NULL;
 }
 
-static int app_key_handle_process(APP_MESSAGE_BODY *msg_body)
-{
+static int app_key_handle_process(APP_MESSAGE_BODY *msg_body)//app_thread回调这个函数
+{       
     APP_KEY_STATUS key_status;
     APP_KEY_HANDLE *key_handle = NULL;
 
@@ -96,10 +96,10 @@ static int app_key_handle_process(APP_MESSAGE_BODY *msg_body)
 
     key_event_cnt--;
 
-    key_handle = app_key_handle_find(&key_status);
+    key_handle = app_key_handle_find(&key_status);//查表找按键的句柄
 
     if (key_handle != NULL && key_handle->function!= NULL)
-        ((APP_KEY_HANDLE_CB_T)key_handle->function)(&key_status,key_handle->param);
+        ((APP_KEY_HANDLE_CB_T)key_handle->function)(&key_status,key_handle->param);//执行按键状态对应的动作
 
     return 0;
 }
@@ -112,7 +112,7 @@ int app_key_handle_registration(const APP_KEY_HANDLE *key_handle)
 
     APP_KEY_HANDLE *dest_key_handle = NULL;
     APP_KEY_TRACE(1,"%s",__func__);
-    dest_key_handle = app_key_handle_find(&(key_handle->key_status));
+    dest_key_handle = app_key_handle_find(&(key_handle->key_status));//根据按键状态（按键的号码和按键的事件）找句柄
 
     APP_KEY_TRACE(2,"%s dest handle:%p",__func__,dest_key_handle);
     if (dest_key_handle == NULL){
@@ -150,14 +150,14 @@ int app_key_open(int checkPwrKey)
     APP_KEY_TRACE(2,"%s %p",__func__, app_key_conifg.key_list);
 
     if (app_key_conifg.key_list == NULL)
-        app_key_conifg.key_list = list_new(app_key_handle_free, NULL, NULL);
+        app_key_conifg.key_list = list_new(app_key_handle_free, NULL, NULL);//写入按键事件处理函数
 
     if (app_key_handle_mempool == NULL)
         app_key_handle_mempool = osPoolCreate(osPool(app_key_handle_mempool));
 
-    app_set_threadhandle(APP_MODUAL_KEY, app_key_handle_process);
+    app_set_threadhandle(APP_MODUAL_KEY, app_key_handle_process);//往上传回app线程去回调处理按键的时间，作出相应动作
 
-    return hal_key_open(checkPwrKey, key_event_process);
+    return hal_key_open(checkPwrKey, key_event_process);//往下，去获取按键事件
 }
 
 int app_key_close(void)

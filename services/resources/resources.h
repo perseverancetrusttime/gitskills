@@ -74,6 +74,11 @@ typedef enum {
 #endif
     MAX_RECORD_NUM,
     AUD_ID_ANC_PROMPT = 0x30,
+
+#ifdef jinyao_learning
+    AUDIO_ID_BT_WELCOME = 0x40,
+#endif
+
     AUD_ID_ENUM_BOTTOM = 0x1001,
 } AUD_ID_ENUM;
 

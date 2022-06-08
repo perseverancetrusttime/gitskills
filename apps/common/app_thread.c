@@ -131,7 +131,7 @@ int app_mailbox_get(APP_MESSAGE_BLOCK** msg_p)
 static void app_thread(void const *argument)
 {
     while(1){
-        APP_MESSAGE_BLOCK *msg_p = NULL;//线程信息块，包含起始与终止线程、模块ID、线程消息序号等
+        APP_MESSAGE_BLOCK *msg_p = NULL;                                    //线程信息块，包含起始与终止线程、模块ID、线程消息序号等
 
         if (!app_mailbox_get(&msg_p)) {
             if (msg_p->mod_id < APP_MODUAL_NUM) {
@@ -159,7 +159,7 @@ int app_os_init(void)
     return 0;
 }
 
-int app_set_threadhandle(enum APP_MODUAL_ID_T mod_id, APP_MOD_HANDLER_T handler)//mod_id是否有经过邮件传送过来？
+int app_set_threadhandle(enum APP_MODUAL_ID_T mod_id, APP_MOD_HANDLER_T handler)
 {
     if (mod_id>=APP_MODUAL_NUM)
         return -1;

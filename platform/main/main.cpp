@@ -261,16 +261,20 @@ int main(void)
 
     main_thread_tid = osThreadGetId();
 
-    hwtimer_init();
+
+
+
+
+    hwtimer_init();//硬件Timer初始化
 
     hal_dma_set_delay_func((HAL_DMA_DELAY_FUNC)osDelay);
-    hal_audma_open();
-    hal_gpdma_open();
+    hal_audma_open();//打开DMA
+    hal_gpdma_open();//打开DMA
     norflash_api_init();
-#if defined(DUMP_LOG_ENABLE)
+#if defined(DUMP_LOG_ENABLE)//使能转存日志
     log_dump_init();
 #endif
-#if (defined(DUMP_CRASH_LOG) || defined(TOTA_CRASH_DUMP_TOOL_ENABLE))
+#if (defined(DUMP_CRASH_LOG) || defined(TOTA_CRASH_DUMP_TOOL_ENABLE))//使能崩溃日志转存、或崩溃转存功能
     crash_dump_init();
 #endif
 #ifdef CORE_DUMP_TO_FLASH
@@ -302,7 +306,7 @@ int main(void)
     hal_trace_set_log_level(TR_LEVEL_DEBUG);
 #endif
 
-    hal_iomux_ispi_access_init();
+    hal_iomux_ispi_access_init();//先停掉电源控制、模拟参数配置的SPI接口
 
 #ifndef FPGA
     uint8_t flash_id[HAL_NORFLASH_DEVICE_ID_LEN];
@@ -340,6 +344,14 @@ int main(void)
 #endif
 
     app_audio_buffer_check();
+
+
+
+
+
+
+
+
 
 #ifdef FPGA
 
